@@ -1,15 +1,19 @@
 package com.incra.ratpack.database;
 
-import java.io.Serializable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.Serializable;
 
 /**
  * Abstract database item, which has an id field.
+ *
+ * @author Jeff Risberg
+ * @since late 2016
  */
 @MappedSuperclass
 public abstract class DatabaseItem implements Serializable {
@@ -17,7 +21,7 @@ public abstract class DatabaseItem implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Integer id;
+    private Integer id;
 
     public DatabaseItem() {
         super();

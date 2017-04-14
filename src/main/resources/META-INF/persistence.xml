@@ -5,14 +5,16 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <class>com.incra.ratpack.models.User</class>
+        <class>com.incra.ratpack.models.Event</class>
+        <class>com.incra.ratpack.models.Metric</class>
         <class>com.incra.ratpack.models.Charity</class>
 
         <properties>
-            <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
-            <property name="hibernate.connection.url" value="jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"/>
-            <property name="hibernate.connection.username" value="sa"/>
-            <property name="hibernate.connection.password" value=""/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/ratpack03"/>
+            <property name="hibernate.connection.username" value="developer"/>
+            <property name="hibernate.connection.password" value="123456"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
             <property name="hibernate.bytecode.use_reflection_optimizer" value="false"/>
 
             <property name="hibernate.show_sql" value="true"/>

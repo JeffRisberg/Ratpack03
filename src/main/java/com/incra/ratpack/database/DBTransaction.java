@@ -3,18 +3,17 @@ package com.incra.ratpack.database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.BatchUpdateException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A DBTransaction is a set of access methods around an entity manager and the current transaction.
  *
- * @author Peter, Jeff
- * @since late 2014
+ * @author Jeff Risberg
+ * @since late 2016
  */
 public class DBTransaction {
     private static Logger jgLog = LoggerFactory.getLogger(DBTransaction.class);
@@ -41,10 +40,6 @@ public class DBTransaction {
             jgLog.trace("Committing Transaction");
             transaction.commit();
             jgLog.trace("Transaction Committed");
-
-            // Expire the cache after a transaction commit
-            // CacheManager cm = database.getCacheManager();
-            // cm.expireCache();
         } catch (Exception e) {
             throw new DBException(e);
         }

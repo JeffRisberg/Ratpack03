@@ -1,0 +1,26 @@
+<html>
+<head>
+    <title>Ratpack03</title>
+</head>
+<body>
+<h1>Event Summary</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Detail</th>
+
+    </tr>
+    </thead>
+    {{#each events}}
+        <tr>
+            <td>{{dateCreated}}</td>
+            <td>{{type}}</td>
+            <td>{{detail}}</td>
+        </tr>
+    {{/each}}
+</table>
+</body>
+</html>
