@@ -1,0 +1,9 @@
+{
+  "database": {
+    "server": "localhost",
+    "portNumber": 3306,
+    "databaseName": "ratpack03",
+    "username": "developer",
+    "password": "123456"
+  }
+}

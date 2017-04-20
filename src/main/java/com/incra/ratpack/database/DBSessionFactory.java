@@ -6,8 +6,10 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author Jeff Risberg
@@ -16,14 +18,13 @@ import java.util.Map;
 public class DBSessionFactory {
     private static Logger jgLog = LoggerFactory.getLogger(DBSessionFactory.class);
 
-    // List of all the existing instances
-    private static Map<String, DBSessionFactory> datasources = new HashMap<String, DBSessionFactory>();
+    // Map of all the existing sessionFactory instances
+    private static Map<DBSessionFactoryId, DBSessionFactory> sessionFactoryMap =
+            new HashMap<DBSessionFactoryId, DBSessionFactory>();
 
-    // Persistence unit name
-    protected String datasourceName;
+    protected DataSource dataSource;
 
-    // The actual database name
-    protected String databaseName;
+    protected String persistanceUnitName;
 
     private EntityManagerFactory emf;
 
@@ -35,30 +36,17 @@ public class DBSessionFactory {
         throw new IllegalArgumentException("DBSessionFactory: no argument constructor not allowed");
     }
 
-    public DBSessionFactory(String datasourceName) throws DBException {
-        this.datasourceName = datasourceName;
+    public DBSessionFactory(DataSource dataSource, String persistanceUnitName) throws DBException {
+        this.dataSource = dataSource;
+        this.persistanceUnitName = persistanceUnitName;
 
-        instantiateSessionFactory();
-    }
-
-    protected void instantiateSessionFactory() throws DBException {
         try {
-            emf = Persistence.createEntityManagerFactory(datasourceName);
+            Properties jpaProperties = new Properties();
+            jpaProperties.put("hibernate.connection.datasource", dataSource);
+
+            emf = Persistence.createEntityManagerFactory(persistanceUnitName, jpaProperties);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new DBException(e);
-        }
-    }
-
-    /**
-     * Returns the default DBSessionFactory instance.
-     *
-     * @return DBSessionFactory
-     */
-    public static synchronized DBSessionFactory getInstance() throws DBException {
-        try {
-            return getInstance("ratpack-jpa");
-        } catch (Exception e) {
             throw new DBException(e);
         }
     }
@@ -67,38 +55,32 @@ public class DBSessionFactory {
      * Obtains the DBSessionFactory instance for the given datasource name.  Check the map for the datasource.
      * Instantiate a new one, if necessary
      *
-     * @param datasourceName The datasource name
+     * @param persistanceUnitName The persistanceUnit name
      * @return DBSessionFactory
      */
-    public static synchronized DBSessionFactory getInstance(String datasourceName) throws DBException {
-        DBSessionFactory sessionFactory = datasources.get(datasourceName);
+    public static synchronized DBSessionFactory getInstance(DataSource dataSource, String persistanceUnitName) throws DBException {
+
+        DBSessionFactoryId sessionFactoryId = new DBSessionFactoryId(dataSource, persistanceUnitName);
+        DBSessionFactory sessionFactory = sessionFactoryMap.get(sessionFactoryId);
 
         if (sessionFactory == null) {
-            sessionFactory = setupSessionFactory(datasourceName);
+            try {
+                sessionFactory = new DBSessionFactory(dataSource, persistanceUnitName);
+                sessionFactoryMap.put(sessionFactoryId, sessionFactory);
+            } catch (Exception e) {
+                throw new DBException(e);
+            }
         }
 
         return sessionFactory;
     }
 
-    private static DBSessionFactory setupSessionFactory(String datasourceName) throws DBException {
-        DBSessionFactory datasource;
-
-        try {
-            datasource = new DBSessionFactory(datasourceName);
-            datasources.put(datasourceName, datasource);
-        } catch (Exception e) {
-            throw new DBException(e);
-        }
-
-        return datasource;
+    public DataSource getDataSource() {
+        return dataSource;
     }
 
-    public String getDatasourceName() {
-        return datasourceName;
-    }
-
-    public String getDatabaseName() {
-        return databaseName;
+    public String getPersistanceUnitName() {
+        return persistanceUnitName;
     }
 
     /**

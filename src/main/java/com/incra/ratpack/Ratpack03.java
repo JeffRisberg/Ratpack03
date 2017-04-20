@@ -1,5 +1,6 @@
 package com.incra.ratpack;
 
+import com.incra.ratpack.config.DatabaseConfig;
 import com.incra.ratpack.handlers.EventHandler;
 import com.incra.ratpack.handlers.MetricHandler;
 import com.incra.ratpack.handlers.UserHandler;
@@ -13,6 +14,7 @@ import ratpack.handlebars.HandlebarsModule;
 import ratpack.hikari.HikariModule;
 import ratpack.server.BaseDir;
 import ratpack.server.RatpackServer;
+import ratpack.server.ServerConfig;
 
 /**
  * @author Jeff Risberg
@@ -25,25 +27,37 @@ public class Ratpack03 {
         RatpackServer.start(spec -> spec
                 .serverConfig(ctx -> {
                             ctx.baseDir(BaseDir.find());
+                            ctx.json("databaseConfig.json");
+                            ctx.require("/database", DatabaseConfig.class);
                         }
                 )
-                .registry(Guice.registry(bindingsSpec ->
-                        bindingsSpec
-                                .module(HikariModule.class, c -> {
-                                    c.setDriverClassName("com.mysql.jdbc.Driver");
-                                    c.setJdbcUrl("jdbc:mysql://localhost:3306/ratpack03");
-                                    c.setUsername("developer");
-                                    c.setPassword("123456");
-                                })
-                                .module(HandlebarsModule.class)
-                                .module(EventModule.class)
-                                .module(MetricModule.class)
-                                .module(UserModule.class)
-                ))
+                .registry(Guice.registry(bindingsSpec -> {
+                    ServerConfig serverConfig = bindingsSpec.getServerConfig();
+                    DatabaseConfig databaseConfig = serverConfig.get("/database", DatabaseConfig.class);
+
+                    String server = databaseConfig.getServer();
+                    Integer portNumber = databaseConfig.getPortNumber();
+                    String databaseName = databaseConfig.getDatabaseName();
+                    String url = String.format("jdbc:mysql://%s:%d/%s?allowMultiQueries=true&characterEncoding=utf8",
+                            server, portNumber, databaseName);
+
+                    bindingsSpec
+                            .module(HikariModule.class, c -> {
+                                c.setDriverClassName("com.mysql.jdbc.Driver");
+                                c.setJdbcUrl(url);
+                                c.setUsername(databaseConfig.getUsername());
+                                c.setPassword(databaseConfig.getPassword());
+                            })
+                            .module(HandlebarsModule.class)
+                            .module(EventModule.class)
+                            .module(MetricModule.class)
+                            .module(UserModule.class);
+                }))
                 .handlers(chain -> chain
                         .path("events", EventHandler.class)
                         .path("metrics", MetricHandler.class)
                         .path("users", UserHandler.class)
+                        .all(ctx -> ctx.render("root handler!"))
                 )
         );
     }

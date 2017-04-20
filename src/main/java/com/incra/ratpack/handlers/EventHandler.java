@@ -9,6 +9,7 @@ import ratpack.handling.Handler;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +29,11 @@ public class EventHandler extends BaseHandler implements Handler {
 
     @Override
     public void handle(Context ctx) throws Exception {
-        DatabaseItemManager dbManager = DatabaseItemManager.getInstance();
+        DatabaseItemManager dbManager = DatabaseItemManager.getInstance(ctx);
 
         Blocking.get(() -> {
-            DBTransaction dbTransaction = dbManager.getTransaction();
+            DataSource dataSource = ctx.get(DataSource.class);
+            DBTransaction dbTransaction = dbManager.getTransaction(dataSource, persistanceUnitName);
 
             List<Event> eventList = dbTransaction.getObjects(Event.class, "Select e from Event e", null);
 

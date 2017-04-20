@@ -5,10 +5,12 @@ import com.google.common.collect.Maps;
 import java.util.Map;
 
 /**
- * @author jeff
- * @since 4/13/17
+ * @author Jeff Risberg
+ * @since 12/20/16
  */
 public class BaseHandler {
+
+    protected static String persistanceUnitName = "ratpack-jpa";
 
     protected static Map<String, Object> getResponseMap(Boolean status, String message) {
         Map<String, Object> response = Maps.newHashMap();
