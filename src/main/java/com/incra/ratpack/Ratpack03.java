@@ -57,6 +57,7 @@ public class Ratpack03 {
                         .path("events", EventHandler.class)
                         .path("metrics", MetricHandler.class)
                         .path("users", UserHandler.class)
+                        .prefix("static", n -> n.files(files -> files.dir("static")))
                         .all(ctx -> ctx.render("root handler!"))
                 )
         );

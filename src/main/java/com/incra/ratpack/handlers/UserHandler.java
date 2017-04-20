@@ -38,16 +38,20 @@ public class UserHandler extends BaseHandler implements Handler {
 
     private void handlePost(Context ctx) throws Exception {
         DatabaseItemManager dbManager = DatabaseItemManager.getInstance(ctx);
-        String username = ctx.getRequest().getQueryParams()
-                .getOrDefault("username", "Han Solo");
         String email = ctx.getRequest().getQueryParams()
                 .getOrDefault("email", "han@rebels.org");
+        String firstname = ctx.getRequest().getQueryParams()
+                .getOrDefault("firstname", "Han");
+        String lastname = ctx.getRequest().getQueryParams()
+                .getOrDefault("firstname", "Solo");
+        String city = "Palo Alto";
+        String state = "CA";
 
         Blocking.get(() -> {
             DataSource dataSource = ctx.get(DataSource.class);
             DBTransaction dbTransaction = dbManager.getTransaction(dataSource, persistanceUnitName);
 
-            dbTransaction.create(new User(username, email));
+            dbTransaction.create(new User(email, firstname, lastname, "", "", city, state));
             dbTransaction.commit();
             return true;
         }).onError(t -> {
