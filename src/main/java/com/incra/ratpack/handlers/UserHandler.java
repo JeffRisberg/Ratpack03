@@ -81,9 +81,9 @@ public class UserHandler extends BaseHandler implements Handler {
             dbTransaction.commit();
 
             return userList;
-        }).then(personList -> {
+        }).then(userList -> {
             Map response = new HashMap();
-            response.put("data", personList);
+            response.put("data", userList);
             ctx.render(json(response));
         });
     }

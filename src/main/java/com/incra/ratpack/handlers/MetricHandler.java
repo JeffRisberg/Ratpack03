@@ -11,6 +11,7 @@ import ratpack.handling.Handler;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -74,7 +75,10 @@ public class MetricHandler extends BaseHandler implements Handler {
             dbTransaction.commit();
 
             return metricList;
-        }).then(metricList ->
-                ctx.render(json(metricList)));
+        }).then(metricList -> {
+            Map response = new HashMap();
+            response.put("data", metricList);
+            ctx.render(json(response));
+        });
     }
 }
