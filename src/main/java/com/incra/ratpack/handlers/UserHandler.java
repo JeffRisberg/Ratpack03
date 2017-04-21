@@ -11,6 +11,7 @@ import ratpack.handling.Handler;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -80,8 +81,11 @@ public class UserHandler extends BaseHandler implements Handler {
             dbTransaction.commit();
 
             return userList;
-        }).then(personList ->
-                ctx.render(json(personList)));
+        }).then(personList -> {
+            Map response = new HashMap();
+            response.put("data", personList);
+            ctx.render(json(response));
+        });
     }
 }
 
