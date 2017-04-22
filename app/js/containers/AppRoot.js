@@ -14,8 +14,7 @@ class AppRoot extends React.Component {
 
                             <div className="navbar-collapse collapse">
                                 <ul className="nav navbar-nav">
-                                    <li><NavLink to="/items">Items</NavLink></li>
-                                    <li><NavLink to="/events">Events</NavLink></li>
+                                    <li><NavLink to="/users">Users</NavLink></li>
                                 </ul>
                             </div>
                         </div>

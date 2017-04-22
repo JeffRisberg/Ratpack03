@@ -1,17 +1,17 @@
 import React from 'react'
 import { connect } from 'react-redux';
 import { setForm, handleFormFieldChange, clearForm } from '../../actions/forms';
-import "./Events.scss";
+import "./Users.scss";
 
 const formName = 'eventForm';
 
 /**
- * Event Editing Form
+ * User Editing Form
  *
  * @author Jeff Risberg, Brandon Risberg
  * @since May 2016
  */
-class EventForm extends React.Component {
+class UserForm extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -73,4 +73,4 @@ const mapStateToProps = (state) => {
 export default connect(
     mapStateToProps,
     {setForm, handleFormFieldChange, clearForm}
-)(EventForm);
+)(UserForm);
