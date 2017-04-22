@@ -22,6 +22,9 @@ public class User extends DatedDatabaseItem {
     @Column(name = "lastname")
     protected String lastname;
 
+    @Column(name = "validated")
+    protected Boolean validated;
+
     @Column(name = "address1")
     protected String addressLine1;
 
@@ -35,18 +38,6 @@ public class User extends DatedDatabaseItem {
     protected String state;
 
     public User() {
-    }
-
-    public User(String email, String firstname, String lastname,
-                String addressLine1, String addressLine2,
-                String city, String state) {
-        this.email = email;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.addressLine1 = addressLine1;
-        this.addressLine2 = addressLine2;
-        this.city = city;
-        this.state = state;
     }
 
     public String getEmail() {
@@ -71,6 +62,14 @@ public class User extends DatedDatabaseItem {
 
     public void setLastname(String lastname) {
         this.lastname = lastname;
+    }
+
+    public Boolean getValidated() {
+        return validated;
+    }
+
+    public void setValidated(Boolean validated) {
+        this.validated = validated;
     }
 
     public String getAddressLine1() {
@@ -103,20 +102,5 @@ public class User extends DatedDatabaseItem {
 
     public void setState(String state) {
         this.state = state;
-    }
-
-    public Map<String, Object> asMap() {
-        Map<String, Object> result = Maps.newHashMap();
-
-        result.put("id", getId());
-        result.put("email", getEmail());
-        result.put("firstname", getFirstname());
-        result.put("lastname", getLastname());
-        result.put("addressLine1", getAddressLine1());
-        result.put("addressLine2", getAddressLine2());
-        result.put("city", getCity());
-        result.put("state", getState());
-
-        return result;
     }
 }

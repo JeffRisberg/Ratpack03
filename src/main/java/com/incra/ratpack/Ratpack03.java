@@ -1,5 +1,6 @@
 package com.incra.ratpack;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.incra.ratpack.config.DatabaseConfig;
 import com.incra.ratpack.handlers.EventHandler;
 import com.incra.ratpack.handlers.MetricHandler;
@@ -7,6 +8,7 @@ import com.incra.ratpack.handlers.UserHandler;
 import com.incra.ratpack.modules.EventModule;
 import com.incra.ratpack.modules.MetricModule;
 import com.incra.ratpack.modules.UserModule;
+import com.incra.ratpack.modules.UserSerializerModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ratpack.guice.Guice;
@@ -40,6 +42,9 @@ public class Ratpack03 {
                     String databaseName = databaseConfig.getDatabaseName();
                     String url = String.format("jdbc:mysql://%s:%d/%s?allowMultiQueries=true&characterEncoding=utf8",
                             server, portNumber, databaseName);
+
+                    bindingsSpec
+                            .add(ObjectMapper.class, new ObjectMapper().registerModule(new UserSerializerModule()));
 
                     bindingsSpec
                             .module(HikariModule.class, c -> {

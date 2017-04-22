@@ -52,8 +52,8 @@ public class UserHandler extends BaseHandler implements Handler {
             DataSource dataSource = ctx.get(DataSource.class);
             DBTransaction dbTransaction = dbManager.getTransaction(dataSource, persistanceUnitName);
 
-            dbTransaction.create(new User(email, firstname, lastname, "", "", city, state));
-            dbTransaction.commit();
+            //dbTransaction.create(new User(email, firstname, lastname, false, "", "", city, state));
+            //dbTransaction.commit();
             return true;
         }).onError(t -> {
             ctx.getResponse().status(400);
@@ -69,11 +69,7 @@ public class UserHandler extends BaseHandler implements Handler {
             DataSource dataSource = ctx.get(DataSource.class);
             DBTransaction dbTransaction = dbManager.getTransaction(dataSource, persistanceUnitName);
 
-            List<User> listUsers = dbTransaction.getObjects(User.class, "Select u from User u", null);
-
-            List<Map<String, Object>> userList = listUsers.stream()
-                    .map(m -> m.asMap())
-                    .collect(Collectors.toList());
+            List<User> userList = dbTransaction.getObjects(User.class, "Select u from User u", null);
 
             Event event = new Event("FETCH", "USERS");
             dbTransaction.create(event);
