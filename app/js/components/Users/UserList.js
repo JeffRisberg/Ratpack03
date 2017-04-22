@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router'
 import { connect } from 'react-redux';
-import { toggleEvent } from '../../actions/events';
-import './Events.scss';
+import { toggleEvent } from '../../actions/users';
+import './Users.scss';
 
-class EventList extends React.Component {
+class UserList extends React.Component {
 
     render() {
         const records = this.props.events.idList.map(id => this.props.events.records[id]);

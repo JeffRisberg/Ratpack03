@@ -5,14 +5,12 @@ import {createStore, combineReducers, applyMiddleware} from "redux";
 import {Provider} from "react-redux";
 import {routerReducer, routerMiddleware} from "react-router-redux";
 import thunkMiddleware from "redux-thunk";
-import items from "./reducers/items";
-import events from "./reducers/events";
+import users from "./reducers/users";
 import forms from "./reducers/forms";
 import routes from "./routes";
 
 const combinedReducers = combineReducers({
-    items,
-    events,
+    users,
     forms,
     routing: routerReducer
 });
