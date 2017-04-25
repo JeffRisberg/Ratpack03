@@ -54,7 +54,7 @@ export const saveUser = (user) => {
 };
 
 export const addUser = (user) => {
-    return function (dispatch) {
+    return function () {
 
         return fetch("/api/users", {
             method: 'POST',
@@ -65,7 +65,7 @@ export const addUser = (user) => {
             body: JSON.stringify(user)
         })
             .then(response => response.json())
-            .then((json) => {
+            .then(() => {
                 //dispatch({
                 //    type: types.APPEND_USERS,
                 //    users: json.data

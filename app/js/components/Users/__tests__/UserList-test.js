@@ -36,7 +36,7 @@ describe('We can render an UserList component', () => {
 
         store.dispatch({
             type: types.APPEND_USERS,
-            users: [{text: "Dinner", time: "1800"}]
+            users: [{firstname: "Jack", lastname: "Smith"}]
         });
 
         const userList =
@@ -50,9 +50,7 @@ describe('We can render an UserList component', () => {
 
         const userListNode = ReactDOM.findDOMNode(userList);
 
-        //expect(userListNode.textContent).toContain('hours'); // in table header
-
-        //expect(userListNode.textContent).toContain('Dinner'); // in user text
-        //expect(userListNode.textContent).toContain('1800'); // in user time
+        expect(userListNode.textContent).toContain('Jack'); // in user firstname
+        expect(userListNode.textContent).toContain('Smith'); // in user lastnae
     });
 });
