@@ -1,36 +1,59 @@
-import React from 'react';
-import { Link } from 'react-router'
-import { connect } from 'react-redux';
-import { toggleEvent } from '../../actions/users';
-import './Users.scss';
+import React from "react";
+import {Link} from "react-router";
+import {connect} from "react-redux";
+import {queryUsers} from "../../actions/users";
+import "./Users.scss";
 
 class UserList extends React.Component {
 
-    render() {
-        const records = this.props.events.idList.map(id => this.props.events.records[id]);
+    componentDidMount() {
+        this.props.queryUsers();
+    }
 
-        const eventNodes = records.map((event, key) => {
-            const id = event.id;
+    render() {
+        const records = this.props.users.idList.map(id => this.props.users.records[id]);
+
+        const userNodes = records.map((user, key) => {
+            const id = user.id;
+
+            var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+            d.setUTCSeconds(user.lastUpdated / 1000);
 
             return (
-                <div key={key} className="events__event">
-                    <Link to={'/events/detail/'+id} className='btn btn-default'>View</Link>
-                    {' '}
-            <span style={{textDecoration: event.completed ? 'line-through' : 'none'}}
-                  onClick={() => this.props.toggleEvent(event)}>
-                {event.firstname} {event.lastname}
-            </span>
-                    {' '}
-                    ({event.city} hours)
-                </div>
+                <tr key={key} className="users__user">
+                    <td>
+                        <Link to={'/users/detail/' + id} className='btn btn-default'>View</Link>
+                    </td>
+                    <td>
+                        {user.email}
+                    </td>
+                    <td>
+                        {user.firstname}
+                    </td>
+                    <td>
+                        {user.lastname}
+                    </td>
+                    <td>
+                        {user.city}
+                    </td>
+                    <td>
+                        {user.state}
+                    </td>
+                    <td>
+                        {d.toDateString()} {d.toTimeString()}
+                    </td>
+                </tr>
             );
         });
 
         return (
-            <div className="events__list">
-                <div>
-                    {eventNodes}
-                </div>
+            <div>
+                <Link className='btn btn-default' to='/users/create'>Create New User</Link>
+                <table className="table users__list">
+                    <tbody>
+                    {userNodes}
+                    </tbody>
+                </table>
             </div>
         );
     }
@@ -38,11 +61,11 @@ class UserList extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        events: state.events
+        users: state.users
     };
 };
 export default connect(
     mapStateToProps,
-    {toggleEvent}
+    {queryUsers}
 )(UserList);
 

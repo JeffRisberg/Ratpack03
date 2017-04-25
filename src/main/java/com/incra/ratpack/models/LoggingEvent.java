@@ -5,6 +5,8 @@ import com.incra.ratpack.database.DatedDatabaseItem;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.sql.Timestamp;
 import java.util.Map;
 
@@ -13,7 +15,11 @@ import java.util.Map;
  * @since 12/30/16
  */
 @Entity
-public class Event extends DatedDatabaseItem {
+public class LoggingEvent extends DatedDatabaseItem {
+
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    User user;
 
     @Column()
     String type; // master key
@@ -21,12 +27,21 @@ public class Event extends DatedDatabaseItem {
     @Column()
     String detail; // second key
 
-    public Event() {
+    public LoggingEvent() {
     }
 
-    public Event(String type, String detail) {
+    public LoggingEvent(User user, String type, String detail) {
+        this.user = user;
         this.type = type;
         this.detail = detail;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getType() {
@@ -45,13 +60,4 @@ public class Event extends DatedDatabaseItem {
         this.detail = detail;
     }
 
-    public Map<String, Object> asMap() {
-        Map<String, Object> result = Maps.newHashMap();
-
-        result.put("id", getId());
-        result.put("type", getType());
-        result.put("detail", getDetail());
-
-        return result;
-    }
 }

@@ -2,11 +2,11 @@ import {handleActions} from "redux-actions";
 import {types} from "../types";
 
 export default handleActions({
-    [types.RESET_EVENTS]: (state, action) => {
+    [types.RESET_USERS]: (state, action) => {
         const idList = [];
         const records = {};
 
-        action.events.forEach(record => {
+        action.users.forEach(record => {
             records[record.id] = record;
             idList.push(record.id);
         });
@@ -14,11 +14,11 @@ export default handleActions({
         return {idList, records};
     },
 
-    [types.APPEND_EVENTS]: (state, action) => {
+    [types.APPEND_USERS]: (state, action) => {
         const idList = state.idList;
         const records = state.records;
 
-        action.events.forEach(record => {
+        action.users.forEach(record => {
             const id = record.id;
 
             if (idList.indexOf(id) < 0) idList.push(id);

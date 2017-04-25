@@ -1,71 +1,106 @@
 import React from "react";
 import {connect} from "react-redux";
-import {fetchEvent, saveEvent, deleteEvent} from "../../actions/events";
-import EventForm from "./EventForm";
-import "./Events.scss";
+import {fetchUser, saveUser, addUser, deleteUser} from "../../actions/users";
+import UserForm from "./UserForm";
+import "./Users.scss";
 
-class EventDetail extends React.Component {
+class UserDetail extends React.Component {
 
     componentDidMount() {
         const id = this.props.params.id;
-        const event = this.props.events.records[id];
 
-        if (event == null)
-            this.props.fetchEvent(id);
+        if (id !== null && id !== undefined) {
+            const user = this.props.users.records[id];
+
+            if (user == null)
+                this.props.fetchUser(id);
+        }
     }
 
     handleSubmit = (e, formData) => {
         e.preventDefault();
 
-        const event = this.props.events.records[this.props.params.id];
+        const id = this.props.params.id;
 
-        event.text = formData.text;
-        event.description = formData.description;
-        event.time = formData.time;
+        if (id !== null && id != undefined) {
+            const user = this.props.users.records[this.props.params.id];
 
-        this.props.saveEvent(event);
+            user.email = formData.email;
+            user.firstname = formData.firstname;
+            user.lastname = formData.lastname;
+            user.city = formData.city;
+            user.state = formData.state;
 
-        this.context.router.push('/events');
+            this.props.saveUser(user);
+
+            this.context.router.push('/users');
+        }
+        else {
+            const user = {};
+
+            user.email = formData.email;
+            user.firstname = formData.firstname;
+            user.lastname = formData.lastname;
+            user.city = formData.city;
+            user.state = formData.state;
+
+            this.props.addUser(user);
+
+            this.context.router.push('/users');
+        }
     }
 
     handleDelete = (e) => {
         e.preventDefault();
 
-        const event = this.props.events.records[this.props.params.id];
+        const user = this.props.users.records[this.props.params.id];
 
-        this.props.deleteEvent(event, '/events'); // this will go to /events after delete
+        this.props.deleteUser(user, '/users'); // this will go to /users after delete
     }
 
     render() {
-        const event = this.props.events.records[this.props.params.id];
+        const user = this.props.users.records[this.props.params.id];
 
-        if (event != null) {
+        if (user != null) {
             return (
-                <EventForm event={event} className="events__detail"
-                           handleSubmit={this.handleSubmit}
-                           handleDelete={this.handleDelete}
-                           formData={{
-                               text: event.text,
-                               description: event.description,
-                               time: event.time
-                           }}/>
+                <UserForm user={user} className="users__detail"
+                          handleSubmit={this.handleSubmit}
+                          handleDelete={this.handleDelete}
+                          formData={{
+                              email: user.email,
+                              firstname: user.firstname,
+                              lastname: user.lastname,
+                              city: user.city,
+                              state: user.state
+                          }}/>
             );
         }
         else
-            return null;
+            return (
+                <UserForm user={user} className="users__detail"
+                          handleSubmit={this.handleSubmit}
+                          handleDelete={this.handleDelete}
+                          formData={{
+                              email: "",
+                              firstname: "",
+                              lastname: "",
+                              city: "",
+                              state: ""
+                          }}/>
+            );
     }
 }
-EventDetail.contextTypes = {
+UserDetail.contextTypes = {
     router: React.PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => {
     return {
-        events: state.events
+        users: state.users
     };
 };
 
 export default connect(
     mapStateToProps,
-    {fetchEvent, saveEvent, deleteEvent}
-)(EventDetail);
+    {fetchUser, saveUser, addUser, deleteUser}
+)(UserDetail);

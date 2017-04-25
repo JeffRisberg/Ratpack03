@@ -27,7 +27,8 @@ public class UserSerializerModule extends SimpleModule {
                     throws IOException {
 
                 jGen.writeStartObject();
-                jGen.writeStringField("name", user.getEmail());
+                jGen.writeNumberField("id", user.getId());
+                jGen.writeStringField("email", user.getEmail());
                 jGen.writeStringField("firstname", user.getFirstname());
                 jGen.writeStringField("lastname", user.getLastname());
                 jGen.writeBooleanField("validated", user.getValidated());
@@ -35,8 +36,8 @@ public class UserSerializerModule extends SimpleModule {
                 jGen.writeStringField("addressLine2", user.getAddressLine2());
                 jGen.writeStringField("city", user.getCity());
                 jGen.writeStringField("state", user.getState());
-                jGen.writeNumberField("date_created", user.getDateCreated().getTime());
-                jGen.writeNumberField("last_updated", user.getLastUpdated().getTime());
+                jGen.writeNumberField("dateCreated", user.getDateCreated().getTime());
+                jGen.writeNumberField("lastUpdated", user.getLastUpdated().getTime());
                 jGen.writeEndObject();
             }
         });

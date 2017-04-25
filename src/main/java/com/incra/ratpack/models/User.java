@@ -23,7 +23,7 @@ public class User extends DatedDatabaseItem {
     protected String lastname;
 
     @Column(name = "validated")
-    protected Boolean validated;
+    protected Boolean validated = false;
 
     @Column(name = "address1")
     protected String addressLine1;
@@ -38,6 +38,17 @@ public class User extends DatedDatabaseItem {
     protected String state;
 
     public User() {
+    }
+
+    public User(String email, String firstname, String lastname, Boolean validated, String addressLine1, String addressLine2, String city, String state) {
+        this.email = email;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.validated = validated;
+        this.addressLine1 = addressLine1;
+        this.addressLine2 = addressLine2;
+        this.city = city;
+        this.state = state;
     }
 
     public String getEmail() {

@@ -2,13 +2,10 @@ package com.incra.ratpack;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.incra.ratpack.config.DatabaseConfig;
-import com.incra.ratpack.handlers.EventHandler;
-import com.incra.ratpack.handlers.MetricHandler;
+import com.incra.ratpack.handlers.DonationHandler;
+import com.incra.ratpack.handlers.LoggingEventHandler;
 import com.incra.ratpack.handlers.UserHandler;
-import com.incra.ratpack.modules.EventModule;
-import com.incra.ratpack.modules.MetricModule;
-import com.incra.ratpack.modules.UserModule;
-import com.incra.ratpack.modules.UserSerializerModule;
+import com.incra.ratpack.modules.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ratpack.guice.Guice;
@@ -44,7 +41,10 @@ public class Ratpack03 {
                             server, portNumber, databaseName);
 
                     bindingsSpec
-                            .add(ObjectMapper.class, new ObjectMapper().registerModule(new UserSerializerModule()));
+                            .add(ObjectMapper.class, new ObjectMapper()
+                                    .registerModule(new UserSerializerModule())
+                                    .registerModule(new LoggingEventSerializerModule())
+                                    .registerModule(new DonationSerializerModule()));
 
                     bindingsSpec
                             .module(HikariModule.class, c -> {
@@ -54,16 +54,20 @@ public class Ratpack03 {
                                 c.setPassword(databaseConfig.getPassword());
                             })
                             .module(HandlebarsModule.class)
-                            .module(EventModule.class)
-                            .module(MetricModule.class)
+                            .module(LoggingEventModule.class)
+                            .module(DonationModule.class)
                             .module(UserModule.class);
                 }))
                 .handlers(chain -> chain
-                        .path("events", EventHandler.class)
-                        .path("metrics", MetricHandler.class)
-                        .path("users", UserHandler.class)
-                        .prefix("static", n -> n.files(files -> files.dir("static")))
-                        .all(ctx -> ctx.render("root handler!"))
+                        .prefix("api", subchain -> subchain
+                                .path("loggingEvents", LoggingEventHandler.class)
+                                .path("donations", DonationHandler.class)
+                                .prefix("users", usersChain -> usersChain
+                                        .path(":id", UserHandler.class)
+                                        .all(UserHandler.class)
+                                )
+                        )
+                        .files(files -> files.dir("static").indexFiles("index.html"))
                 )
         );
     }

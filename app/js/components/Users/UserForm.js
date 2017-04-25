@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { setForm, handleFormFieldChange, clearForm } from '../../actions/forms';
 import "./Users.scss";
 
-const formName = 'eventForm';
+const formName = 'userForm';
 
 /**
  * User Editing Form
@@ -25,25 +25,39 @@ class UserForm extends React.Component {
     }
 
     render() {
-        const event = this.props.event;
-
-        if (this.props.form != null && this.props.form !== undefined && event !== null && event !== undefined) {
+        if (this.props.form != null && this.props.form !== undefined) {
 
             return (
                 <div className={this.props.className}>
                     <form onSubmit={(e) => {this.props.handleSubmit(e, this.props.form)}}>
 
-                        <p>Text:</p>
-
+                        <p>Email:</p>
                         <p>
-                            <input type="text" name="text" size="40" defaultValue={this.props.form.text}
+                            <input type="text" name="email" size="40" defaultValue={this.props.form.email}
                                    onChange={(e) => {this.props.handleFormFieldChange(formName, e) }}/>
                         </p>
 
-                        <p>Time:</p>
-
+                        <p>First Name:</p>
                         <p>
-                            <input type="text" name="time" size="20" defaultValue={this.props.form.time}
+                            <input type="text" name="firstname" size="30" defaultValue={this.props.form.firstname}
+                                   onChange={(e) => {this.props.handleFormFieldChange(formName, e) }}/>
+                        </p>
+
+                        <p>Last Name:</p>
+                        <p>
+                            <input type="text" name="lastname" size="30" defaultValue={this.props.form.lastname}
+                                   onChange={(e) => {this.props.handleFormFieldChange(formName, e)}}/>
+                        </p>
+
+                        <p>City:</p>
+                        <p>
+                            <input type="text" name="city" size="40" defaultValue={this.props.form.city}
+                                   onChange={(e) => {this.props.handleFormFieldChange(formName, e)}}/>
+                        </p>
+
+                        <p>State:</p>
+                        <p>
+                            <input type="text" name="state" size="20" defaultValue={this.props.form.state}
                                    onChange={(e) => {this.props.handleFormFieldChange(formName, e)}}/>
                         </p>
 

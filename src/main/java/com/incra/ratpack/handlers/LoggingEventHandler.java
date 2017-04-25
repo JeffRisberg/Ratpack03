@@ -2,7 +2,7 @@ package com.incra.ratpack.handlers;
 
 import com.incra.ratpack.database.DBTransaction;
 import com.incra.ratpack.database.DatabaseItemManager;
-import com.incra.ratpack.models.Event;
+import com.incra.ratpack.models.LoggingEvent;
 import ratpack.exec.Blocking;
 import ratpack.handling.Context;
 import ratpack.handling.Handler;
@@ -21,10 +21,10 @@ import static ratpack.handlebars.Template.handlebarsTemplate;
  * @since 12/13/16
  */
 @Singleton
-public class EventHandler extends BaseHandler implements Handler {
+public class LoggingEventHandler extends BaseHandler implements Handler {
 
     @Inject
-    public EventHandler() {
+    public LoggingEventHandler() {
     }
 
     @Override
@@ -35,7 +35,7 @@ public class EventHandler extends BaseHandler implements Handler {
             DataSource dataSource = ctx.get(DataSource.class);
             DBTransaction dbTransaction = dbManager.getTransaction(dataSource, persistanceUnitName);
 
-            List<Event> eventList = dbTransaction.getObjects(Event.class, "Select e from Event e", null);
+            List<LoggingEvent> eventList = dbTransaction.getObjects(LoggingEvent.class, "Select e from LoggingEvent e", null);
 
             dbTransaction.commit();
 
