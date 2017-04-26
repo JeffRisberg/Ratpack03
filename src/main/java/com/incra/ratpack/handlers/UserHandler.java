@@ -91,7 +91,7 @@ public class UserHandler extends BaseHandler implements Handler {
                 user.setLastUpdated(new Date(System.currentTimeMillis()));
 
                 dbTransaction.commit();
-                dbTransaction.close();
+                dbTransaction.close(); // transaction has changes, so close it
 
                 return userList;
             }).then(userList -> {
@@ -115,7 +115,7 @@ public class UserHandler extends BaseHandler implements Handler {
 
                 dbTransaction.create(newUser);
                 dbTransaction.commit();
-                dbTransaction.close();
+                dbTransaction.close(); // transaction has changes, so close it
 
                 return true;
             }).onError(t -> {
@@ -142,7 +142,7 @@ public class UserHandler extends BaseHandler implements Handler {
 
             dbTransaction.delete(user);
             dbTransaction.commit();
-            dbTransaction.close();
+            dbTransaction.close(); // transaction has changes, so close it
 
             return user;
         }).then(userList -> {

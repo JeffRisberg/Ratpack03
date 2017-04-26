@@ -39,29 +39,30 @@ public class DonationHandler extends BaseHandler implements Handler {
     }
 
     private void handlePost(Context ctx) throws Exception {
-        DatabaseItemManager dbManager = DatabaseItemManager.getInstance(ctx);
-        String userIdStr = ctx.getRequest().getQueryParams()
-                .getOrDefault("userId", "1");
-        Integer userId = Integer.parseInt(userIdStr);
-        String charity = ctx.getRequest().getQueryParams()
-                .getOrDefault("charity", "ClickCount");
-        String amountStr = ctx.getRequest().getQueryParams()
-                .getOrDefault("amount", "100");
-        Integer amount = Integer.parseInt(amountStr);
+        ctx.parse(Donation.class).then(newDonation -> {
+            DatabaseItemManager dbManager = DatabaseItemManager.getInstance(ctx);
+            String userIdStr = ctx.getRequest().getQueryParams()
+                    .getOrDefault("userId", "1");
+            Integer userId = Integer.parseInt(userIdStr);
 
-        Blocking.get(() -> {
-            DataSource dataSource = ctx.get(DataSource.class);
-            DBTransaction dbTransaction = dbManager.getTransaction(dataSource, persistanceUnitName);
+            Blocking.get(() -> {
+                DataSource dataSource = ctx.get(DataSource.class);
+                DBTransaction dbTransaction = dbManager.getTransaction(dataSource, persistanceUnitName);
 
-            User user = dbTransaction.getObject(User.class, "from User u where id=" + userId);
-            dbTransaction.create(new Donation(user, charity, amount));
-            dbTransaction.commit();
-            return true;
-        }).onError(t -> {
-            ctx.getResponse().status(400);
-            ctx.render(json(getResponseMap(false, t.getMessage())));
-        }).then(r ->
-                ctx.render(json(getResponseMap(true, null))));
+                User user = dbTransaction.getObject(User.class, "from User u where id=" + userId);
+                newDonation.setUser(user);
+                dbTransaction.create(newDonation);
+
+                dbTransaction.commit();
+                dbTransaction.close(); // transaction has changes, so close it
+
+                return true;
+            }).onError(t -> {
+                ctx.getResponse().status(400);
+                ctx.render(json(getResponseMap(false, t.getMessage())));
+            }).then(r ->
+                    ctx.render(json(getResponseMap(true, null))));
+        });
     }
 
     private void handleGet(Context ctx) throws Exception {
