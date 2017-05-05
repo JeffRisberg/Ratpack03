@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.incra.ratpack.models.LoggingEvent;
-import com.incra.ratpack.models.User;
 
 import java.io.IOException;
 
@@ -27,15 +26,14 @@ public class LoggingEventSerializerModule extends SimpleModule {
             public void serialize(LoggingEvent loggingEvent, JsonGenerator jGen, SerializerProvider serializerProvider)
                     throws IOException {
 
-                User user = loggingEvent.getUser();
-
                 jGen.writeStartObject();
+                if (loggingEvent.getEventDate() != null) {
+                    jGen.writeNumberField("eventDate", loggingEvent.getEventDate().getTime());
+                }
                 jGen.writeNumberField("id", loggingEvent.getId());
-                jGen.writeStringField("firstname", user.getFirstname());
-                jGen.writeStringField("lastname", user.getLastname());
-
-                jGen.writeNumberField("dateCreated", loggingEvent.getDateCreated().getTime());
-                jGen.writeNumberField("lastUpdated", loggingEvent.getLastUpdated().getTime());
+                jGen.writeStringField("type", loggingEvent.getType());
+                jGen.writeStringField("detail", loggingEvent.getDetail());
+                jGen.writeStringField("userEmail", loggingEvent.getUserEmail());
                 jGen.writeEndObject();
             }
         });

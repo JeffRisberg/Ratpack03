@@ -1,13 +1,12 @@
 package com.incra.ratpack.models;
 
 import com.google.common.collect.Maps;
+import com.incra.ratpack.database.DatabaseItem;
 import com.incra.ratpack.database.DatedDatabaseItem;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -15,11 +14,14 @@ import java.util.Map;
  * @since 12/30/16
  */
 @Entity
-public class LoggingEvent extends DatedDatabaseItem {
+@Table(name="logging_event")
+public class LoggingEvent extends DatabaseItem {
 
-    @ManyToOne
-    @JoinColumn(name="user_id")
-    User user;
+    @Column(name = "event_date")
+    private Date eventDate;
+
+    @Column(name="user_email")
+    String userEmail;
 
     @Column()
     String type; // master key
@@ -30,18 +32,27 @@ public class LoggingEvent extends DatedDatabaseItem {
     public LoggingEvent() {
     }
 
-    public LoggingEvent(User user, String type, String detail) {
-        this.user = user;
+    public LoggingEvent(Date eventDate, String userEmail, String type, String detail) {
+        this.eventDate = eventDate;
+        this.userEmail = userEmail;
         this.type = type;
         this.detail = detail;
     }
 
-    public User getUser() {
-        return user;
+    public Date getEventDate() {
+        return eventDate;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setEventDate(Date eventDate) {
+        this.eventDate = eventDate;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     public String getType() {
@@ -59,5 +70,4 @@ public class LoggingEvent extends DatedDatabaseItem {
     public void setDetail(String detail) {
         this.detail = detail;
     }
-
 }

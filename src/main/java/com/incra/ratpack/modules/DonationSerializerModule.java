@@ -34,9 +34,12 @@ public class DonationSerializerModule extends SimpleModule {
                 jGen.writeStringField("username", user.getFirstname() + " " + user.getLastname());
                 jGen.writeStringField("charityName", donation.getCharityName());
                 jGen.writeNumberField("amount", donation.getAmount());
-
-                jGen.writeNumberField("dateCreated", donation.getDateCreated().getTime());
-                jGen.writeNumberField("lastUpdated", donation.getLastUpdated().getTime());
+                if (donation.getDateCreated() != null) {
+                    jGen.writeNumberField("dateCreated", donation.getDateCreated().getTime());
+                }
+                if (donation.getLastUpdated() != null) {
+                    jGen.writeNumberField("lastUpdated", donation.getLastUpdated().getTime());
+                }
                 jGen.writeEndObject();
             }
         });

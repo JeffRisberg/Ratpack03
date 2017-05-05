@@ -1,21 +1,20 @@
 package com.incra.ratpack.handlers;
 
+import com.incra.ratpack.binding.annotation.DB1;
+import com.incra.ratpack.database.DBService;
 import com.incra.ratpack.database.DBTransaction;
-import com.incra.ratpack.database.DatabaseItemManager;
 import com.incra.ratpack.models.Donation;
-import com.incra.ratpack.models.LoggingEvent;
 import com.incra.ratpack.models.User;
+import com.incra.ratpack.services.EventService;
 import ratpack.exec.Blocking;
 import ratpack.handling.Context;
 import ratpack.handling.Handler;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static ratpack.jackson.Jackson.json;
 
@@ -25,9 +24,13 @@ import static ratpack.jackson.Jackson.json;
  */
 @Singleton
 public class DonationHandler extends BaseHandler implements Handler {
+    protected DBService dbService;
+    protected EventService eventService;
 
     @Inject
-    public DonationHandler() {
+    public DonationHandler(@DB1 DBService dbService, EventService eventService) {
+        this.dbService = dbService;
+        this.eventService = eventService;
     }
 
     @Override
@@ -40,23 +43,27 @@ public class DonationHandler extends BaseHandler implements Handler {
 
     private void handlePost(Context ctx) throws Exception {
         ctx.parse(Donation.class).then(newDonation -> {
-            DatabaseItemManager dbManager = DatabaseItemManager.getInstance(ctx);
             String userIdStr = ctx.getRequest().getQueryParams()
                     .getOrDefault("userId", "1");
             Integer userId = Integer.parseInt(userIdStr);
 
             Blocking.get(() -> {
-                DataSource dataSource = ctx.get(DataSource.class);
-                DBTransaction dbTransaction = dbManager.getTransaction(dataSource, persistanceUnitName);
+                DBTransaction dbTransaction = dbService.getTransaction();
 
                 User user = dbTransaction.getObject(User.class, "from User u where id=" + userId);
-                newDonation.setUser(user);
-                dbTransaction.create(newDonation);
+                if (user != null) {
+                    newDonation.setUser(user);
+                    dbTransaction.create(newDonation);
 
-                dbTransaction.commit();
-                dbTransaction.close(); // transaction has changes, so close it
+                    dbTransaction.commit();
+                    dbTransaction.close(); // transaction has changes, so close it
 
-                return true;
+                    eventService.createEvent(user.getEmail(), "Donation", "create");
+                    return true;
+                } else {
+                    return false;
+                }
+
             }).onError(t -> {
                 ctx.getResponse().status(400);
                 ctx.render(json(getResponseMap(false, t.getMessage())));
@@ -66,15 +73,13 @@ public class DonationHandler extends BaseHandler implements Handler {
     }
 
     private void handleGet(Context ctx) throws Exception {
-        DatabaseItemManager dbManager = DatabaseItemManager.getInstance(ctx);
-
         Blocking.get(() -> {
-            DataSource dataSource = ctx.get(DataSource.class);
-            DBTransaction dbTransaction = dbManager.getTransaction(dataSource, persistanceUnitName);
+            DBTransaction dbTransaction = dbService.getTransaction();
 
-            List<Donation> donationList = dbTransaction.getObjects(Donation.class, "Select m from Donation m", null);
+            List<Donation> donationList = dbTransaction.getObjects(Donation.class, "select d from Donation d", null);
 
             dbTransaction.commit();
+            dbTransaction.close();
 
             return donationList;
         }).then(donationList -> {

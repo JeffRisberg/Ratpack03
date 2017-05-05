@@ -5,6 +5,7 @@ import com.incra.ratpack.database.DatedDatabaseItem;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Map;
 
 /**
@@ -12,6 +13,7 @@ import java.util.Map;
  * @since 11/26/16
  */
 @Entity
+@Table(name="user")
 public class User extends DatedDatabaseItem {
     @Column(name = "email")
     protected String email;

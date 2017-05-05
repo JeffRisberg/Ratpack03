@@ -3,10 +3,7 @@ package com.incra.ratpack.models;
 import com.google.common.collect.Maps;
 import com.incra.ratpack.database.DatedDatabaseItem;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.Map;
 
 /**
@@ -14,6 +11,7 @@ import java.util.Map;
  * @since 12/30/16
  */
 @Entity
+@Table(name="donation")
 public class Donation extends DatedDatabaseItem {
 
     @ManyToOne()

@@ -1,9 +1,18 @@
 {
-  "database": {
+  "database1": {
     "server": "localhost",
     "portNumber": 3306,
     "databaseName": "ratpack03",
     "username": "developer",
-    "password": "123456"
+    "password": "123456",
+    "persistanceUnitName": "ratpack-jpa"
+  },
+  "database2": {
+    "server": "localhost",
+    "portNumber": 3306,
+    "databaseName": "ratpack03Aux",
+    "username": "developer",
+    "password": "123456",
+    "persistanceUnitName": "ratpack-jpa"
   }
 }

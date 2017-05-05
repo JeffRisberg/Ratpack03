@@ -1,7 +1,8 @@
 package com.incra.ratpack.handlers;
 
+import com.incra.ratpack.binding.annotation.DB2;
+import com.incra.ratpack.database.DBService;
 import com.incra.ratpack.database.DBTransaction;
-import com.incra.ratpack.database.DatabaseItemManager;
 import com.incra.ratpack.models.LoggingEvent;
 import ratpack.exec.Blocking;
 import ratpack.handling.Context;
@@ -9,7 +10,6 @@ import ratpack.handling.Handler;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,22 +22,22 @@ import static ratpack.handlebars.Template.handlebarsTemplate;
  */
 @Singleton
 public class LoggingEventHandler extends BaseHandler implements Handler {
+    protected DBService dbService;
 
     @Inject
-    public LoggingEventHandler() {
+    public LoggingEventHandler(@DB2 DBService dbService) {
+        this.dbService = dbService;
     }
 
     @Override
     public void handle(Context ctx) throws Exception {
-        DatabaseItemManager dbManager = DatabaseItemManager.getInstance(ctx);
-
         Blocking.get(() -> {
-            DataSource dataSource = ctx.get(DataSource.class);
-            DBTransaction dbTransaction = dbManager.getTransaction(dataSource, persistanceUnitName);
+            DBTransaction dbTransaction = dbService.getTransaction();
 
-            List<LoggingEvent> eventList = dbTransaction.getObjects(LoggingEvent.class, "Select e from LoggingEvent e", null);
+            List<LoggingEvent> eventList = dbTransaction.getObjects(LoggingEvent.class, "select e from LoggingEvent e", null);
 
             dbTransaction.commit();
+            dbTransaction.close();
 
             return eventList;
         }).then(eventList -> {

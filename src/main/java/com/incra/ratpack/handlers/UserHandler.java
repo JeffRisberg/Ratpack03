@@ -1,16 +1,16 @@
 package com.incra.ratpack.handlers;
 
-import com.incra.ratpack.database.DBSessionFactory;
+import com.incra.ratpack.binding.annotation.DB1;
+import com.incra.ratpack.database.DBService;
 import com.incra.ratpack.database.DBTransaction;
-import com.incra.ratpack.database.DatabaseItemManager;
 import com.incra.ratpack.models.User;
+import com.incra.ratpack.services.EventService;
 import ratpack.exec.Blocking;
 import ratpack.handling.Context;
 import ratpack.handling.Handler;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.sql.DataSource;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,9 +24,13 @@ import static ratpack.jackson.Jackson.json;
  */
 @Singleton
 public class UserHandler extends BaseHandler implements Handler {
+    protected DBService dbService;
+    protected EventService eventService;
 
     @Inject
-    public UserHandler() {
+    public UserHandler(@DB1 DBService dbService, EventService eventService) {
+        this.dbService = dbService;
+        this.eventService = eventService;
     }
 
     @Override
@@ -40,11 +44,8 @@ public class UserHandler extends BaseHandler implements Handler {
     }
 
     private void handleGet(Context ctx) throws Exception {
-        DatabaseItemManager dbManager = DatabaseItemManager.getInstance(ctx);
-
         Blocking.get(() -> {
-            DataSource dataSource = ctx.get(DataSource.class);
-            DBTransaction dbTransaction = dbManager.getTransaction(dataSource, persistanceUnitName);
+            DBTransaction dbTransaction = dbService.getTransaction();
 
             String idStr = ctx.getPathTokens().get("id");
 
@@ -52,13 +53,14 @@ public class UserHandler extends BaseHandler implements Handler {
 
             if (idStr != null && idStr.length() > 0) {
                 userList = dbTransaction.getObjects
-                        (User.class, "Select u from User u where id=" + idStr, null);
+                        (User.class, "select u from User u where id=" + idStr, null);
             } else {
                 userList = dbTransaction.getObjects
-                        (User.class, "Select u from User u", null);
+                        (User.class, "select u from User u", null);
             }
 
             dbTransaction.commit();
+            dbTransaction.close();
 
             return userList;
         }).then(userList -> {
@@ -70,16 +72,13 @@ public class UserHandler extends BaseHandler implements Handler {
 
     private void handlePut(Context ctx) throws Exception {
         ctx.parse(User.class).then(revisedUser -> {
-            DatabaseItemManager dbManager = DatabaseItemManager.getInstance(ctx);
-
             Blocking.get(() -> {
-                DataSource dataSource = ctx.get(DataSource.class);
-                DBTransaction dbTransaction = dbManager.getTransaction(dataSource, persistanceUnitName);
+                DBTransaction dbTransaction = dbService.getTransaction();
 
                 String idStr = ctx.getPathTokens().get("id");
 
                 List<User> userList = dbTransaction.getObjects
-                        (User.class, "Select u from User u where id=" + idStr, null);
+                        (User.class, "select u from User u where id=" + idStr, null);
 
                 User user = userList.get(0);
 
@@ -104,11 +103,8 @@ public class UserHandler extends BaseHandler implements Handler {
 
     private void handlePost(Context ctx) throws Exception {
         ctx.parse(User.class).then(newUser -> {
-            DatabaseItemManager dbManager = DatabaseItemManager.getInstance(ctx);
-
             Blocking.get(() -> {
-                DataSource dataSource = ctx.get(DataSource.class);
-                DBTransaction dbTransaction = dbManager.getTransaction(dataSource, persistanceUnitName);
+                DBTransaction dbTransaction = dbService.getTransaction();
 
                 newUser.setLastUpdated(new Date(System.currentTimeMillis()));
                 newUser.setDateCreated(new Date(System.currentTimeMillis()));
@@ -116,6 +112,8 @@ public class UserHandler extends BaseHandler implements Handler {
                 dbTransaction.create(newUser);
                 dbTransaction.commit();
                 dbTransaction.close(); // transaction has changes, so close it
+
+                eventService.createEvent("admin@gmail.com", "User", "create");
 
                 return true;
             }).onError(t -> {
@@ -127,16 +125,13 @@ public class UserHandler extends BaseHandler implements Handler {
     }
 
     private void handleDelete(Context ctx) throws Exception {
-        DatabaseItemManager dbManager = DatabaseItemManager.getInstance(ctx);
-
         Blocking.get(() -> {
-            DataSource dataSource = ctx.get(DataSource.class);
-            DBTransaction dbTransaction = dbManager.getTransaction(dataSource, persistanceUnitName);
+            DBTransaction dbTransaction = dbService.getTransaction();
 
             String idStr = ctx.getPathTokens().get("id");
 
             List<User> userList = dbTransaction.getObjects
-                    (User.class, "Select u from User u where id=" + idStr, null);
+                    (User.class, "select u from User u where id=" + idStr, null);
 
             User user = userList.get(0);
 

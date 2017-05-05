@@ -36,8 +36,12 @@ public class UserSerializerModule extends SimpleModule {
                 jGen.writeStringField("addressLine2", user.getAddressLine2());
                 jGen.writeStringField("city", user.getCity());
                 jGen.writeStringField("state", user.getState());
-                jGen.writeNumberField("dateCreated", user.getDateCreated().getTime());
-                jGen.writeNumberField("lastUpdated", user.getLastUpdated().getTime());
+                if (user.getDateCreated() != null) {
+                    jGen.writeNumberField("dateCreated", user.getDateCreated().getTime());
+                }
+                if (user.getLastUpdated() != null) {
+                    jGen.writeNumberField("lastUpdated", user.getLastUpdated().getTime());
+                }
                 jGen.writeEndObject();
             }
         });

@@ -10,7 +10,7 @@ class AppRoot extends React.Component {
                 <div className="navbar navbar-inverse navbar-fixed-top" style={{marginBottom: '0px'}}>
                     <div className="container">
                         <div className="navbar-inner">
-                            <NavLink to="/" className="navbar-brand">RE03</NavLink>
+                            <NavLink to="/" className="navbar-brand">Ratpack03</NavLink>
 
                             <div className="navbar-collapse collapse">
                                 <ul className="nav navbar-nav">
