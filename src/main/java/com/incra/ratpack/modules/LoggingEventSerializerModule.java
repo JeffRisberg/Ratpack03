@@ -27,10 +27,10 @@ public class LoggingEventSerializerModule extends SimpleModule {
                     throws IOException {
 
                 jGen.writeStartObject();
+                jGen.writeNumberField("id", loggingEvent.getId());
                 if (loggingEvent.getEventDate() != null) {
                     jGen.writeNumberField("eventDate", loggingEvent.getEventDate().getTime());
                 }
-                jGen.writeNumberField("id", loggingEvent.getId());
                 jGen.writeStringField("type", loggingEvent.getType());
                 jGen.writeStringField("detail", loggingEvent.getDetail());
                 jGen.writeStringField("userEmail", loggingEvent.getUserEmail());
