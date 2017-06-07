@@ -36,7 +36,7 @@ public class EventHandler extends BaseHandler implements Handler {
         Blocking.get(() -> {
             DBTransaction dbTransaction = dbService.getTransaction();
 
-            List<Event> eventList = dbTransaction.getObjects(Event.class, "select e from Event e", null);
+            List<Event> eventList = dbTransaction.getObjects(Event.class, "select e from Event e", null, 0, 20);
 
             dbTransaction.commit();
             dbTransaction.close();
