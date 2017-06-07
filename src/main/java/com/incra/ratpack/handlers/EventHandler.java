@@ -3,7 +3,9 @@ package com.incra.ratpack.handlers;
 import com.incra.ratpack.binding.annotation.DB2;
 import com.incra.ratpack.database.DBService;
 import com.incra.ratpack.database.DBTransaction;
-import com.incra.ratpack.models.LoggingEvent;
+import com.incra.ratpack.models.Event;
+import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.HikariPoolMXBean;
 import ratpack.exec.Blocking;
 import ratpack.handling.Context;
 import ratpack.handling.Handler;
@@ -21,11 +23,11 @@ import static ratpack.handlebars.Template.handlebarsTemplate;
  * @since 12/13/16
  */
 @Singleton
-public class LoggingEventHandler extends BaseHandler implements Handler {
+public class EventHandler extends BaseHandler implements Handler {
     protected DBService dbService;
 
     @Inject
-    public LoggingEventHandler(@DB2 DBService dbService) {
+    public EventHandler(@DB2 DBService dbService) {
         this.dbService = dbService;
     }
 
@@ -34,7 +36,7 @@ public class LoggingEventHandler extends BaseHandler implements Handler {
         Blocking.get(() -> {
             DBTransaction dbTransaction = dbService.getTransaction();
 
-            List<LoggingEvent> eventList = dbTransaction.getObjects(LoggingEvent.class, "select e from LoggingEvent e", null);
+            List<Event> eventList = dbTransaction.getObjects(Event.class, "select e from Event e", null);
 
             dbTransaction.commit();
             dbTransaction.close();
@@ -43,6 +45,18 @@ public class LoggingEventHandler extends BaseHandler implements Handler {
         }).then(eventList -> {
             Map m = new HashMap();
             m.put("events", eventList);
+
+            HikariDataSource hds = dbService.getDataSource();
+            HikariPoolMXBean poolMXBean = hds.getHikariPoolMXBean();
+            int idleConnections = poolMXBean.getIdleConnections();
+            int activeConnections = poolMXBean.getActiveConnections();
+            int threadsAwaitingConnections = poolMXBean.getThreadsAwaitingConnection();
+            int totalConnections = poolMXBean.getTotalConnections();
+
+            m.put("idleConnections", idleConnections);
+            m.put("activeConnections", activeConnections);
+            m.put("threadsAwaitingConnections", threadsAwaitingConnections);
+            m.put("totalConnections", totalConnections);
 
             ctx.render(handlebarsTemplate("eventSummary.html", m, "text/html"));
         });

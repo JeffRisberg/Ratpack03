@@ -3,6 +3,7 @@ package com.incra.ratpack.handlers;
 import com.incra.ratpack.binding.annotation.DB1;
 import com.incra.ratpack.database.DBService;
 import com.incra.ratpack.database.DBTransaction;
+import com.incra.ratpack.models.EventType;
 import com.incra.ratpack.models.User;
 import com.incra.ratpack.services.EventService;
 import ratpack.exec.Blocking;
@@ -113,7 +114,7 @@ public class UserHandler extends BaseHandler implements Handler {
                 dbTransaction.commit();
                 dbTransaction.close(); // transaction has changes, so close it
 
-                eventService.createEvent("admin@gmail.com", "User", "create");
+                eventService.createEvent(EventType.Register,"admin@gmail.com", "User", "create");
 
                 return true;
             }).onError(t -> {

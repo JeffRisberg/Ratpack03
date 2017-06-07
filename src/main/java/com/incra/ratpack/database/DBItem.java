@@ -16,14 +16,14 @@ import java.io.Serializable;
  * @since late 2016
  */
 @MappedSuperclass
-public abstract class DatabaseItem implements Serializable {
-    private static Logger LOGGER = LoggerFactory.getLogger(DatabaseItem.class);
+public abstract class DBItem implements Serializable {
+    private static Logger LOGGER = LoggerFactory.getLogger(DBItem.class);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    public DatabaseItem() {
+    public DBItem() {
         super();
     }
 

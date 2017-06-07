@@ -1,10 +1,8 @@
 package com.incra.ratpack.models;
 
-import com.google.common.collect.Maps;
-import com.incra.ratpack.database.DatedDatabaseItem;
+import com.incra.ratpack.database.DatedDBItem;
 
 import javax.persistence.*;
-import java.util.Map;
 
 /**
  * @author Jeff Risberg
@@ -12,7 +10,7 @@ import java.util.Map;
  */
 @Entity
 @Table(name="donation")
-public class Donation extends DatedDatabaseItem {
+public class Donation extends DatedDBItem {
 
     @ManyToOne()
     @JoinColumn(name = "user_id")

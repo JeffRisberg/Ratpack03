@@ -1,41 +1,42 @@
 package com.incra.ratpack.models;
 
-import com.google.common.collect.Maps;
-import com.incra.ratpack.database.DatabaseItem;
-import com.incra.ratpack.database.DatedDatabaseItem;
+import com.incra.ratpack.database.DBItem;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.Date;
-import java.util.Map;
 
 /**
  * @author Jeff Risberg
  * @since 12/30/16
  */
 @Entity
-@Table(name="logging_event")
-public class LoggingEvent extends DatabaseItem {
+@Table(name="event")
+public class Event extends DBItem {
 
     @Column(name = "event_date")
     private Date eventDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "event_type")
+    private EventType eventType;
 
     @Column(name="user_email")
     String userEmail;
 
     @Column()
-    String type; // master key
+    String page;
 
     @Column()
-    String detail; // second key
+    String detail;
 
-    public LoggingEvent() {
+    public Event() {
     }
 
-    public LoggingEvent(Date eventDate, String userEmail, String type, String detail) {
+    public Event(Date eventDate, EventType eventType, String userEmail, String page, String detail) {
         this.eventDate = eventDate;
+        this.eventType = eventType;
         this.userEmail = userEmail;
-        this.type = type;
+        this.page = page;
         this.detail = detail;
     }
 
@@ -47,6 +48,14 @@ public class LoggingEvent extends DatabaseItem {
         this.eventDate = eventDate;
     }
 
+    public EventType getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(EventType eventType) {
+        this.eventType = eventType;
+    }
+
     public String getUserEmail() {
         return userEmail;
     }
@@ -55,12 +64,12 @@ public class LoggingEvent extends DatabaseItem {
         this.userEmail = userEmail;
     }
 
-    public String getType() {
-        return type;
+    public String getPage() {
+        return page;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPage(String page) {
+        this.page = page;
     }
 
     public String getDetail() {

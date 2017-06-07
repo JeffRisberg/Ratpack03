@@ -3,7 +3,7 @@ package com.incra.ratpack;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.incra.ratpack.config.DatabaseConfig;
 import com.incra.ratpack.handlers.DonationHandler;
-import com.incra.ratpack.handlers.LoggingEventHandler;
+import com.incra.ratpack.handlers.EventHandler;
 import com.incra.ratpack.handlers.UserHandler;
 import com.incra.ratpack.modules.*;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ public class Ratpack03 {
                     bindingsSpec
                             .add(ObjectMapper.class, new ObjectMapper()
                                     .registerModule(new UserSerializerModule())
-                                    .registerModule(new LoggingEventSerializerModule())
+                                    .registerModule(new EventSerializerModule())
                                     .registerModule(new DonationSerializerModule()));
 
                     bindingsSpec
@@ -43,13 +43,13 @@ public class Ratpack03 {
 
                     bindingsSpec
                             .module(HandlebarsModule.class)
-                            .module(LoggingEventModule.class)
+                            .module(EventModule.class)
                             .module(DonationModule.class)
                             .module(UserModule.class);
                 }))
                 .handlers(chain -> chain
                         .prefix("api", subchain -> subchain
-                                .path("loggingEvents", LoggingEventHandler.class)
+                                .path("events", EventHandler.class)
                                 .path("donations", DonationHandler.class)
                                 .prefix("users", usersChain -> usersChain
                                         .path(":id", UserHandler.class)

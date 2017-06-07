@@ -1,12 +1,10 @@
 package com.incra.ratpack.models;
 
-import com.google.common.collect.Maps;
-import com.incra.ratpack.database.DatedDatabaseItem;
+import com.incra.ratpack.database.DatedDBItem;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.Map;
 
 /**
  * @author Jeff Risberg
@@ -14,7 +12,7 @@ import java.util.Map;
  */
 @Entity
 @Table(name="user")
-public class User extends DatedDatabaseItem {
+public class User extends DatedDBItem {
     @Column(name = "email")
     protected String email;
 

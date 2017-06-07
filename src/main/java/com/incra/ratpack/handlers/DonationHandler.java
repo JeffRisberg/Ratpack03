@@ -4,6 +4,7 @@ import com.incra.ratpack.binding.annotation.DB1;
 import com.incra.ratpack.database.DBService;
 import com.incra.ratpack.database.DBTransaction;
 import com.incra.ratpack.models.Donation;
+import com.incra.ratpack.models.EventType;
 import com.incra.ratpack.models.User;
 import com.incra.ratpack.services.EventService;
 import ratpack.exec.Blocking;
@@ -58,7 +59,7 @@ public class DonationHandler extends BaseHandler implements Handler {
                     dbTransaction.commit();
                     dbTransaction.close(); // transaction has changes, so close it
 
-                    eventService.createEvent(user.getEmail(), "Donation", "create");
+                    eventService.createEvent(EventType.Donate, user.getEmail(), "Donation", "create");
                     return true;
                 } else {
                     return false;

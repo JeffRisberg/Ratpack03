@@ -9,12 +9,18 @@
 <div class="container">
     <h1>Event Summary</h1>
 
+    <p>idleConnections: {{idleConnections}}</p>
+    <p>activeConnections: {{activeConnections}}</p>
+    <p>threadsAwaitingConnections: {{threadsAwaitingConnections}}</p>
+    <p>totalConnections: {{totalConnections}}</p>
+
     <table class="table">
         <thead>
         <tr>
             <th>Date Time</th>
+            <th>Event Type</th>
             <th>User Email</th>
-            <th>Type</th>
+            <th>Page</th>
             <th>Detail</th>
 
         </tr>
@@ -22,8 +28,9 @@
         {{#each events}}
             <tr>
                 <td>{{eventDate}}</td>
+                <td>{{eventType}}</td>
                 <td>{{userEmail}}</td>
-                <td>{{type}}</td>
+                <td>{{page}}</td>
                 <td>{{detail}}</td>
             </tr>
         {{/each}}
