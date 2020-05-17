@@ -17,6 +17,7 @@ class UserDetail extends React.Component {
         }
     }
 
+    /*
     handleSubmit = (e, formData) => {
         e.preventDefault();
 
@@ -49,7 +50,9 @@ class UserDetail extends React.Component {
             this.context.router.push('/users');
         }
     }
+     */
 
+    /*
     handleDelete = (e) => {
         e.preventDefault();
 
@@ -57,6 +60,7 @@ class UserDetail extends React.Component {
 
         this.props.deleteUser(user, '/users'); // this will go to /users after delete
     }
+     */
 
     render() {
         const user = this.props.users.records[this.props.params.id];

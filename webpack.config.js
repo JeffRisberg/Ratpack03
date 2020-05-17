@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 
 module.exports = {
+    mode: 'development',
     entry: {
         javascript: "./app/js/client.js",
     },
@@ -9,7 +10,7 @@ module.exports = {
         filename: "bundle.js"
     },
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.scss$/,
                 use: ['style-loader', 'css-loader', 'sass-loader'],
