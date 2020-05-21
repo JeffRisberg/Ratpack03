@@ -8,7 +8,7 @@ import com.incra.ratpack.handlers.DonationHandler;
  * @since 02/12/17
  */
 public class DonationModule extends AbstractModule {
-    protected void configure() {
-        bind(DonationHandler.class);
-    }
+  protected void configure() {
+    bind(DonationHandler.class);
+  }
 }

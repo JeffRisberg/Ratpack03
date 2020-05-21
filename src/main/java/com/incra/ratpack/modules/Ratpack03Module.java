@@ -14,21 +14,26 @@ import ratpack.server.ServerConfig;
  */
 public class Ratpack03Module extends AbstractModule {
 
-    private ServerConfig serverConfig;
-    private DatabaseConfig databaseConfig1;
-    private DatabaseConfig databaseConfig2;
+  private ServerConfig serverConfig;
+  private DatabaseConfig databaseConfig1;
+  private DatabaseConfig databaseConfig2;
 
-    public Ratpack03Module(ServerConfig serverConfig) {
-        this.serverConfig = serverConfig;
+  public Ratpack03Module(ServerConfig serverConfig) {
+    this.serverConfig = serverConfig;
 
-        this.databaseConfig1 = serverConfig.get("/database1", DatabaseConfig.class);
-        this.databaseConfig2 = serverConfig.get("/database2", DatabaseConfig.class);
-    }
+    this.databaseConfig1 = serverConfig.get("/database1", DatabaseConfig.class);
+    this.databaseConfig2 = serverConfig.get("/database2", DatabaseConfig.class);
+  }
 
-    @Override
-    protected void configure() {
-        bind(DBService.class).annotatedWith(DB1.class).toProvider(new DBServiceProvider(databaseConfig1)).in(Scopes.SINGLETON);
-        bind(DBService.class).annotatedWith(DB2.class).toProvider(new DBServiceProvider(databaseConfig2)).in(Scopes.SINGLETON);
-    }
+  @Override
+  protected void configure() {
+    bind(DBService.class)
+        .annotatedWith(DB1.class)
+        .toProvider(new DBServiceProvider(databaseConfig1))
+        .in(Scopes.SINGLETON);
+    bind(DBService.class)
+        .annotatedWith(DB2.class)
+        .toProvider(new DBServiceProvider(databaseConfig2))
+        .in(Scopes.SINGLETON);
+  }
 }
-

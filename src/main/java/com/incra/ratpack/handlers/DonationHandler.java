@@ -25,68 +25,75 @@ import static ratpack.jackson.Jackson.json;
  */
 @Singleton
 public class DonationHandler extends BaseHandler implements Handler {
-    protected DBService dbService;
-    protected EventService eventService;
+  protected DBService dbService;
+  protected EventService eventService;
 
-    @Inject
-    public DonationHandler(@DB1 DBService dbService, EventService eventService) {
-        this.dbService = dbService;
-        this.eventService = eventService;
-    }
+  @Inject
+  public DonationHandler(@DB1 DBService dbService, EventService eventService) {
+    this.dbService = dbService;
+    this.eventService = eventService;
+  }
 
-    @Override
-    public void handle(Context ctx) throws Exception {
-        ctx.byMethod(metricSpec ->
-                metricSpec
-                        .post(() -> this.handlePost(ctx))
-                        .get(() -> this.handleGet(ctx)));
-    }
+  @Override
+  public void handle(Context ctx) throws Exception {
+    ctx.byMethod(
+        metricSpec -> metricSpec.post(() -> this.handlePost(ctx)).get(() -> this.handleGet(ctx)));
+  }
 
-    private void handlePost(Context ctx) throws Exception {
-        ctx.parse(Donation.class).then(newDonation -> {
-            String userIdStr = ctx.getRequest().getQueryParams()
-                    .getOrDefault("userId", "1");
-            Integer userId = Integer.parseInt(userIdStr);
+  private void handlePost(Context ctx) throws Exception {
+    ctx.parse(Donation.class)
+        .then(
+            newDonation -> {
+              String userIdStr = ctx.getRequest().getQueryParams().getOrDefault("userId", "1");
+              Integer userId = Integer.parseInt(userIdStr);
 
-            Blocking.get(() -> {
-                DBTransaction dbTransaction = dbService.getTransaction();
+              Blocking.get(
+                      () -> {
+                        DBTransaction dbTransaction = dbService.getTransaction();
 
-                User user = dbTransaction.getObject(User.class, "from User u where id=" + userId);
-                if (user != null) {
-                    newDonation.setUser(user);
-                    dbTransaction.create(newDonation);
+                        User user =
+                            dbTransaction.getObject(User.class, "from User u where id=" + userId);
+                        if (user != null) {
+                          newDonation.setUser(user);
+                          dbTransaction.create(newDonation);
 
-                    dbTransaction.commit();
-                    dbTransaction.close(); // transaction has changes, so close it
+                          dbTransaction.commit();
+                          dbTransaction.close(); // transaction has changes, so close it
 
-                    eventService.createEvent(EventType.Donate, user.getEmail(), "Donation", "create");
-                    return true;
-                } else {
-                    return false;
-                }
+                          eventService.createEvent(
+                              EventType.Donate, user.getEmail(), "Donation", "create");
+                          return true;
+                        } else {
+                          return false;
+                        }
+                      })
+                  .onError(
+                      t -> {
+                        ctx.getResponse().status(400);
+                        ctx.render(json(getResponseMap(false, t.getMessage())));
+                      })
+                  .then(r -> ctx.render(json(getResponseMap(true, null))));
+            });
+  }
 
-            }).onError(t -> {
-                ctx.getResponse().status(400);
-                ctx.render(json(getResponseMap(false, t.getMessage())));
-            }).then(r ->
-                    ctx.render(json(getResponseMap(true, null))));
-        });
-    }
+  private void handleGet(Context ctx) throws Exception {
+    Blocking.get(
+            () -> {
+              DBTransaction dbTransaction = dbService.getTransaction();
 
-    private void handleGet(Context ctx) throws Exception {
-        Blocking.get(() -> {
-            DBTransaction dbTransaction = dbService.getTransaction();
+              List<Donation> donationList =
+                  dbTransaction.getObjects(Donation.class, "select d from Donation d", null);
 
-            List<Donation> donationList = dbTransaction.getObjects(Donation.class, "select d from Donation d", null);
+              dbTransaction.commit();
+              dbTransaction.close();
 
-            dbTransaction.commit();
-            dbTransaction.close();
-
-            return donationList;
-        }).then(donationList -> {
-            Map response = new HashMap();
-            response.put("data", donationList);
-            ctx.render(json(response));
-        });
-    }
+              return donationList;
+            })
+        .then(
+            donationList -> {
+              Map response = new HashMap();
+              response.put("data", donationList);
+              ctx.render(json(response));
+            });
+  }
 }

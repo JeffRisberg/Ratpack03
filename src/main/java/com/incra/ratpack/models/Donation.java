@@ -9,49 +9,47 @@ import javax.persistence.*;
  * @since 12/30/16
  */
 @Entity
-@Table(name="donation")
+@Table(name = "donation")
 public class Donation extends DatedDBItem {
 
-    @ManyToOne()
-    @JoinColumn(name = "user_id")
-    User user;
+  @ManyToOne()
+  @JoinColumn(name = "user_id")
+  User user;
 
-    @Column(name="charity_name")
-    String charityName;
+  @Column(name = "charity_name")
+  String charityName;
 
-    @Column()
-    Integer amount;
+  @Column() Integer amount;
 
-    public Donation() {
-    }
+  public Donation() {}
 
-    public Donation(User user, String charityName, Integer amount) {
-        this.user = user;
-        this.charityName = charityName;
-        this.amount = amount;
-    }
+  public Donation(User user, String charityName, Integer amount) {
+    this.user = user;
+    this.charityName = charityName;
+    this.amount = amount;
+  }
 
-    public User getUser() {
-        return user;
-    }
+  public User getUser() {
+    return user;
+  }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+  public void setUser(User user) {
+    this.user = user;
+  }
 
-    public String getCharityName() {
-        return charityName;
-    }
+  public String getCharityName() {
+    return charityName;
+  }
 
-    public void setCharityName(String charityName) {
-        this.charityName = charityName;
-    }
+  public void setCharityName(String charityName) {
+    this.charityName = charityName;
+  }
 
-    public Integer getAmount() {
-        return amount;
-    }
+  public Integer getAmount() {
+    return amount;
+  }
 
-    public void setAmount(Integer amount) {
-        this.amount = amount;
-    }
+  public void setAmount(Integer amount) {
+    this.amount = amount;
+  }
 }

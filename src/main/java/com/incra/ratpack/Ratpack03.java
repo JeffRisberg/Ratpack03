@@ -22,42 +22,49 @@ public class Ratpack03 {
   private static final Logger LOGGER = LoggerFactory.getLogger(Ratpack03.class);
 
   public static void main(String[] args) throws Exception {
-    RatpackServer.start(spec -> spec
-      .serverConfig(ctx -> {
-          ctx.baseDir(BaseDir.find());
-          ctx.json("databaseConfig.json");
-          ctx.require("/database", DatabaseConfig.class);
-        }
-      )
-      .registry(Guice.registry(bindingsSpec -> {
-        ServerConfig serverConfig = bindingsSpec.getServerConfig();
+    RatpackServer.start(
+        spec ->
+            spec.serverConfig(
+                    ctx -> {
+                      ctx.baseDir(BaseDir.find());
+                      ctx.json("databaseConfig.json");
+                      ctx.require("/database", DatabaseConfig.class);
+                    })
+                .registry(
+                    Guice.registry(
+                        bindingsSpec -> {
+                          ServerConfig serverConfig = bindingsSpec.getServerConfig();
 
-        bindingsSpec
-          .add(ObjectMapper.class, new ObjectMapper()
-            .registerModule(new UserSerializerModule())
-            .registerModule(new EventSerializerModule())
-            .registerModule(new DonationSerializerModule()));
+                          bindingsSpec.add(
+                              ObjectMapper.class,
+                              new ObjectMapper()
+                                  .registerModule(new UserSerializerModule())
+                                  .registerModule(new EventSerializerModule())
+                                  .registerModule(new DonationSerializerModule()));
 
-        bindingsSpec
-          .module(new Ratpack03Module(serverConfig));
+                          bindingsSpec.module(new Ratpack03Module(serverConfig));
 
-        bindingsSpec
-          .module(HandlebarsModule.class)
-          .module(EventModule.class)
-          .module(DonationModule.class)
-          .module(UserModule.class);
-      }))
-      .handlers(chain -> chain
-        .prefix("api", subchain -> subchain
-          .path("events", EventHandler.class)
-          .path("donations", DonationHandler.class)
-          .prefix("users", usersChain -> usersChain
-            .path(":id", UserHandler.class)
-            .all(UserHandler.class)
-          )
-        )
-        .files(files -> files.dir("static").indexFiles("index.html"))
-      )
-    );
+                          bindingsSpec
+                              .module(HandlebarsModule.class)
+                              .module(EventModule.class)
+                              .module(DonationModule.class)
+                              .module(UserModule.class);
+                        }))
+                .handlers(
+                    chain ->
+                        chain
+                            .prefix(
+                                "api",
+                                subchain ->
+                                    subchain
+                                        .path("events", EventHandler.class)
+                                        .path("donations", DonationHandler.class)
+                                        .prefix(
+                                            "users",
+                                            usersChain ->
+                                                usersChain
+                                                    .path(":id", UserHandler.class)
+                                                    .all(UserHandler.class)))
+                            .files(files -> files.dir("static").indexFiles("index.html"))));
   }
 }

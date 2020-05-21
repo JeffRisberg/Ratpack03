@@ -25,126 +25,145 @@ import static ratpack.jackson.Jackson.json;
  */
 @Singleton
 public class UserHandler extends BaseHandler implements Handler {
-    protected DBService dbService;
-    protected EventService eventService;
+  protected DBService dbService;
+  protected EventService eventService;
 
-    @Inject
-    public UserHandler(@DB1 DBService dbService, EventService eventService) {
-        this.dbService = dbService;
-        this.eventService = eventService;
-    }
+  @Inject
+  public UserHandler(@DB1 DBService dbService, EventService eventService) {
+    this.dbService = dbService;
+    this.eventService = eventService;
+  }
 
-    @Override
-    public void handle(Context ctx) throws Exception {
-        ctx.byMethod(spec ->
-                spec
-                        .get(() -> this.handleGet(ctx))
-                        .put(() -> this.handlePut(ctx))
-                        .post(() -> this.handlePost(ctx))
-                        .delete(() -> this.handleDelete(ctx)));
-    }
+  @Override
+  public void handle(Context ctx) throws Exception {
+    ctx.byMethod(
+        spec ->
+            spec.get(() -> this.handleGet(ctx))
+                .put(() -> this.handlePut(ctx))
+                .post(() -> this.handlePost(ctx))
+                .delete(() -> this.handleDelete(ctx)));
+  }
 
-    private void handleGet(Context ctx) throws Exception {
-        Blocking.get(() -> {
-            DBTransaction dbTransaction = dbService.getTransaction();
+  private void handleGet(Context ctx) throws Exception {
+    Blocking.get(
+            () -> {
+              DBTransaction dbTransaction = dbService.getTransaction();
 
-            String idStr = ctx.getPathTokens().get("id");
+              String idStr = ctx.getPathTokens().get("id");
 
-            List<User> userList;
+              List<User> userList;
 
-            if (idStr != null && idStr.length() > 0) {
-                userList = dbTransaction.getObjects
-                        (User.class, "select u from User u where id=" + idStr, null);
-            } else {
-                userList = dbTransaction.getObjects
-                        (User.class, "select u from User u", null);
-            }
+              if (idStr != null && idStr.length() > 0) {
+                userList =
+                    dbTransaction.getObjects(
+                        User.class, "select u from User u where id=" + idStr, null);
+              } else {
+                userList = dbTransaction.getObjects(User.class, "select u from User u", null);
+              }
 
-            dbTransaction.commit();
-            dbTransaction.close();
+              dbTransaction.commit();
+              dbTransaction.close();
 
-            return userList;
-        }).then(userList -> {
-            Map response = new HashMap();
-            response.put("data", userList);
-            ctx.render(json(response));
-        });
-    }
-
-    private void handlePut(Context ctx) throws Exception {
-        ctx.parse(User.class).then(revisedUser -> {
-            Blocking.get(() -> {
-                DBTransaction dbTransaction = dbService.getTransaction();
-
-                String idStr = ctx.getPathTokens().get("id");
-
-                List<User> userList = dbTransaction.getObjects
-                        (User.class, "select u from User u where id=" + idStr, null);
-
-                User user = userList.get(0);
-
-                user.setEmail(revisedUser.getEmail());
-                user.setFirstname(revisedUser.getFirstname());
-                user.setLastname(revisedUser.getLastname());
-                user.setCity(revisedUser.getCity());
-                user.setState(revisedUser.getState());
-                user.setLastUpdated(new Date(System.currentTimeMillis()));
-
-                dbTransaction.commit();
-                dbTransaction.close(); // transaction has changes, so close it
-
-                return userList;
-            }).then(userList -> {
-                Map response = new HashMap();
-                response.put("data", userList);
-                ctx.render(json(response));
+              return userList;
+            })
+        .then(
+            userList -> {
+              Map response = new HashMap();
+              response.put("data", userList);
+              ctx.render(json(response));
             });
-        });
-    }
+  }
 
-    private void handlePost(Context ctx) throws Exception {
-        ctx.parse(User.class).then(newUser -> {
-            Blocking.get(() -> {
-                DBTransaction dbTransaction = dbService.getTransaction();
+  private void handlePut(Context ctx) throws Exception {
+    ctx.parse(User.class)
+        .then(
+            revisedUser -> {
+              Blocking.get(
+                      () -> {
+                        DBTransaction dbTransaction = dbService.getTransaction();
 
-                newUser.setLastUpdated(new Date(System.currentTimeMillis()));
-                newUser.setDateCreated(new Date(System.currentTimeMillis()));
+                        String idStr = ctx.getPathTokens().get("id");
 
-                dbTransaction.create(newUser);
-                dbTransaction.commit();
-                dbTransaction.close(); // transaction has changes, so close it
+                        List<User> userList =
+                            dbTransaction.getObjects(
+                                User.class, "select u from User u where id=" + idStr, null);
 
-                eventService.createEvent(EventType.Register,"admin@gmail.com", "User", "create");
+                        User user = userList.get(0);
 
-                return true;
-            }).onError(t -> {
-                ctx.getResponse().status(400);
-                ctx.render(json(getResponseMap(false, t.getMessage())));
-            }).then(r ->
-                    ctx.render(json(getResponseMap(true, null))));
-        });
-    }
+                        user.setEmail(revisedUser.getEmail());
+                        user.setFirstname(revisedUser.getFirstname());
+                        user.setLastname(revisedUser.getLastname());
+                        user.setCity(revisedUser.getCity());
+                        user.setState(revisedUser.getState());
+                        user.setLastUpdated(new Date(System.currentTimeMillis()));
 
-    private void handleDelete(Context ctx) throws Exception {
-        Blocking.get(() -> {
-            DBTransaction dbTransaction = dbService.getTransaction();
+                        dbTransaction.commit();
+                        dbTransaction.close(); // transaction has changes, so close it
 
-            String idStr = ctx.getPathTokens().get("id");
+                        return userList;
+                      })
+                  .then(
+                      userList -> {
+                        Map response = new HashMap();
+                        response.put("data", userList);
+                        ctx.render(json(response));
+                      });
+            });
+  }
 
-            List<User> userList = dbTransaction.getObjects
-                    (User.class, "select u from User u where id=" + idStr, null);
+  private void handlePost(Context ctx) throws Exception {
+    ctx.parse(User.class)
+        .then(
+            newUser -> {
+              Blocking.get(
+                      () -> {
+                        DBTransaction dbTransaction = dbService.getTransaction();
 
-            User user = userList.get(0);
+                        newUser.setLastUpdated(new Date(System.currentTimeMillis()));
+                        newUser.setDateCreated(new Date(System.currentTimeMillis()));
 
-            dbTransaction.delete(user);
-            dbTransaction.commit();
-            dbTransaction.close(); // transaction has changes, so close it
+                        dbTransaction.create(newUser);
+                        dbTransaction.commit();
+                        dbTransaction.close(); // transaction has changes, so close it
 
-            return user;
-        }).then(userList -> {
-            Map response = new HashMap();
-            response.put("data", userList);
-            ctx.render(json(response));
-        });
-    }
+                        eventService.createEvent(
+                            EventType.Register, "admin@gmail.com", "User", "create");
+
+                        return true;
+                      })
+                  .onError(
+                      t -> {
+                        ctx.getResponse().status(400);
+                        ctx.render(json(getResponseMap(false, t.getMessage())));
+                      })
+                  .then(r -> ctx.render(json(getResponseMap(true, null))));
+            });
+  }
+
+  private void handleDelete(Context ctx) throws Exception {
+    Blocking.get(
+            () -> {
+              DBTransaction dbTransaction = dbService.getTransaction();
+
+              String idStr = ctx.getPathTokens().get("id");
+
+              List<User> userList =
+                  dbTransaction.getObjects(
+                      User.class, "select u from User u where id=" + idStr, null);
+
+              User user = userList.get(0);
+
+              dbTransaction.delete(user);
+              dbTransaction.commit();
+              dbTransaction.close(); // transaction has changes, so close it
+
+              return user;
+            })
+        .then(
+            userList -> {
+              Map response = new HashMap();
+              response.put("data", userList);
+              ctx.render(json(response));
+            });
+  }
 }

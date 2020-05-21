@@ -24,42 +24,45 @@ import static ratpack.handlebars.Template.handlebarsTemplate;
  */
 @Singleton
 public class EventHandler extends BaseHandler implements Handler {
-    protected DBService dbService;
+  protected DBService dbService;
 
-    @Inject
-    public EventHandler(@DB2 DBService dbService) {
-        this.dbService = dbService;
-    }
+  @Inject
+  public EventHandler(@DB2 DBService dbService) {
+    this.dbService = dbService;
+  }
 
-    @Override
-    public void handle(Context ctx) throws Exception {
-        Blocking.get(() -> {
-            DBTransaction dbTransaction = dbService.getTransaction();
+  @Override
+  public void handle(Context ctx) throws Exception {
+    Blocking.get(
+            () -> {
+              DBTransaction dbTransaction = dbService.getTransaction();
 
-            List<Event> eventList = dbTransaction.getObjects(Event.class, "select e from Event e", null, 0, 20);
+              List<Event> eventList =
+                  dbTransaction.getObjects(Event.class, "select e from Event e", null, 0, 20);
 
-            dbTransaction.commit();
-            dbTransaction.close();
+              dbTransaction.commit();
+              dbTransaction.close();
 
-            return eventList;
-        }).then(eventList -> {
-            Map m = new HashMap();
-            m.put("events", eventList);
+              return eventList;
+            })
+        .then(
+            eventList -> {
+              Map m = new HashMap();
+              m.put("events", eventList);
 
-            HikariDataSource hds = dbService.getDataSource();
-            HikariPoolMXBean poolMXBean = hds.getHikariPoolMXBean();
-            int idleConnections = poolMXBean.getIdleConnections();
-            int activeConnections = poolMXBean.getActiveConnections();
-            int threadsAwaitingConnections = poolMXBean.getThreadsAwaitingConnection();
-            int totalConnections = poolMXBean.getTotalConnections();
+              HikariDataSource hds = dbService.getDataSource();
+              HikariPoolMXBean poolMXBean = hds.getHikariPoolMXBean();
+              int idleConnections = poolMXBean.getIdleConnections();
+              int activeConnections = poolMXBean.getActiveConnections();
+              int threadsAwaitingConnections = poolMXBean.getThreadsAwaitingConnection();
+              int totalConnections = poolMXBean.getTotalConnections();
 
-            m.put("idleConnections", idleConnections);
-            m.put("activeConnections", activeConnections);
-            m.put("threadsAwaitingConnections", threadsAwaitingConnections);
-            m.put("totalConnections", totalConnections);
+              m.put("idleConnections", idleConnections);
+              m.put("activeConnections", activeConnections);
+              m.put("threadsAwaitingConnections", threadsAwaitingConnections);
+              m.put("totalConnections", totalConnections);
 
-            ctx.render(handlebarsTemplate("eventSummary.html", m, "text/html"));
-        });
-    }
+              ctx.render(handlebarsTemplate("eventSummary.html", m, "text/html"));
+            });
+  }
 }
-

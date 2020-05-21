@@ -8,7 +8,7 @@ import com.incra.ratpack.handlers.EventHandler;
  * @since 04/12/17
  */
 public class EventModule extends AbstractModule {
-    protected void configure() {
-        bind(EventHandler.class);
-    }
+  protected void configure() {
+    bind(EventHandler.class);
+  }
 }

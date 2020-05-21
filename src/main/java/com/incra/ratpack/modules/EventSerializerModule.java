@@ -14,29 +14,31 @@ import java.io.IOException;
  * @since 02/12/17
  */
 public class EventSerializerModule extends SimpleModule {
-    private static final String NAME = "EventSerializerModule";
-    private static final VersionUtil VERSION_UTIL = new VersionUtil() {
-    };
+  private static final String NAME = "EventSerializerModule";
+  private static final VersionUtil VERSION_UTIL = new VersionUtil() {};
 
-    public EventSerializerModule() {
-        super(NAME, VERSION_UTIL.version());
+  public EventSerializerModule() {
+    super(NAME, VERSION_UTIL.version());
 
-        addSerializer(Event.class, new JsonSerializer<Event>() {
-            @Override
-            public void serialize(Event event, JsonGenerator jGen, SerializerProvider serializerProvider)
-                    throws IOException {
+    addSerializer(
+        Event.class,
+        new JsonSerializer<Event>() {
+          @Override
+          public void serialize(
+              Event event, JsonGenerator jGen, SerializerProvider serializerProvider)
+              throws IOException {
 
-                jGen.writeStartObject();
-                jGen.writeNumberField("id", event.getId());
-                if (event.getEventDate() != null) {
-                    jGen.writeNumberField("eventDate", event.getEventDate().getTime());
-                }
-                jGen.writeStringField("type", event.getEventType().name());
-                jGen.writeStringField("page", event.getPage());
-                jGen.writeStringField("detail", event.getDetail());
-                jGen.writeStringField("userEmail", event.getUserEmail());
-                jGen.writeEndObject();
+            jGen.writeStartObject();
+            jGen.writeNumberField("id", event.getId());
+            if (event.getEventDate() != null) {
+              jGen.writeNumberField("eventDate", event.getEventDate().getTime());
             }
+            jGen.writeStringField("type", event.getEventType().name());
+            jGen.writeStringField("page", event.getPage());
+            jGen.writeStringField("detail", event.getDetail());
+            jGen.writeStringField("userEmail", event.getUserEmail());
+            jGen.writeEndObject();
+          }
         });
-    }
+  }
 }

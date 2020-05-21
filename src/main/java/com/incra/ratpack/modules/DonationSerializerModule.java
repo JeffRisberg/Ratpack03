@@ -15,33 +15,35 @@ import java.io.IOException;
  * @since 02/12/17
  */
 public class DonationSerializerModule extends SimpleModule {
-    private static final String NAME = "DonationSerializerModule";
-    private static final VersionUtil VERSION_UTIL = new VersionUtil() {
-    };
+  private static final String NAME = "DonationSerializerModule";
+  private static final VersionUtil VERSION_UTIL = new VersionUtil() {};
 
-    public DonationSerializerModule() {
-        super(NAME, VERSION_UTIL.version());
+  public DonationSerializerModule() {
+    super(NAME, VERSION_UTIL.version());
 
-        addSerializer(Donation.class, new JsonSerializer<Donation>() {
-            @Override
-            public void serialize(Donation donation, JsonGenerator jGen, SerializerProvider serializerProvider)
-                    throws IOException {
+    addSerializer(
+        Donation.class,
+        new JsonSerializer<Donation>() {
+          @Override
+          public void serialize(
+              Donation donation, JsonGenerator jGen, SerializerProvider serializerProvider)
+              throws IOException {
 
-                User user = donation.getUser();
+            User user = donation.getUser();
 
-                jGen.writeStartObject();
-                jGen.writeNumberField("id", donation.getId());
-                jGen.writeStringField("username", user.getFirstname() + " " + user.getLastname());
-                jGen.writeStringField("charityName", donation.getCharityName());
-                jGen.writeNumberField("amount", donation.getAmount());
-                if (donation.getDateCreated() != null) {
-                    jGen.writeNumberField("dateCreated", donation.getDateCreated().getTime());
-                }
-                if (donation.getLastUpdated() != null) {
-                    jGen.writeNumberField("lastUpdated", donation.getLastUpdated().getTime());
-                }
-                jGen.writeEndObject();
+            jGen.writeStartObject();
+            jGen.writeNumberField("id", donation.getId());
+            jGen.writeStringField("username", user.getFirstname() + " " + user.getLastname());
+            jGen.writeStringField("charityName", donation.getCharityName());
+            jGen.writeNumberField("amount", donation.getAmount());
+            if (donation.getDateCreated() != null) {
+              jGen.writeNumberField("dateCreated", donation.getDateCreated().getTime());
             }
+            if (donation.getLastUpdated() != null) {
+              jGen.writeNumberField("lastUpdated", donation.getLastUpdated().getTime());
+            }
+            jGen.writeEndObject();
+          }
         });
-    }
+  }
 }
