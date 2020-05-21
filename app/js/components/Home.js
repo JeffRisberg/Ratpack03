@@ -2,25 +2,25 @@ import React from 'react'
 
 class Home extends React.Component {
 
-    render() {
-        return (
-            <div className={this.props.className}>
-                <h2>Ratpack03 Example</h2>
+  render() {
+    return (
+        <div className={this.props.className}>
+          <h2>Ratpack03 Example</h2>
 
-                <div className="row">
-                    <div className="col-md-4">
-                        Uses React for presentation
-                    </div>
-                    <div className="col-md-4">
-                        Uses Redux for data management
-                    </div>
-                    <div className="col-md-4">
-                        Uses Ratpack/MySQL backend
-                    </div>
-                </div>
+          <div className="row">
+            <div className="col-md-4">
+              Uses React for presentation
             </div>
-        );
-    }
+            <div className="col-md-4">
+              Uses Redux for data management
+            </div>
+            <div className="col-md-4">
+              Uses Ratpack/MySQL backend
+            </div>
+          </div>
+        </div>
+    );
+  }
 }
 
 export default Home;
