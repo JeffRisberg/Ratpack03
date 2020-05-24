@@ -1,12 +1,9 @@
 package com.incra.ratpack.database;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
 import java.util.Calendar;
 import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
 
 /**
  * Abstract database item with dateCreated and lastUpdated fields.
@@ -15,8 +12,7 @@ import java.util.Date;
  * @since late 2016
  */
 @MappedSuperclass
-public abstract class DatedDBItem extends DBItem {
-  private static Logger LOGGER = LoggerFactory.getLogger(DatedDBItem.class);
+public abstract class AbstractDatedDatabaseItem extends AbstractDatabaseItem {
 
   @Column(name = "date_created", columnDefinition = "timestamp not null default now()")
   protected Date dateCreated = new Date();

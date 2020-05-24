@@ -30,6 +30,9 @@ public class UserHandler extends BaseHandler implements Handler {
 
   @Inject
   public UserHandler(@DB1 DBService dbService, EventService eventService) {
+    if (dbService == null) {
+      throw new IllegalArgumentException("unknown dbService");
+    }
     this.dbService = dbService;
     this.eventService = eventService;
   }

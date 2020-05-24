@@ -1,6 +1,6 @@
 package com.incra.ratpack.models;
 
-import com.incra.ratpack.database.DatedDBItem;
+import com.incra.ratpack.database.AbstractDatedDatabaseItem;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class Donation extends DatedDBItem {
+public class Donation extends AbstractDatedDatabaseItem {
 
   @ManyToOne()
   @JoinColumn(name = "user_id")

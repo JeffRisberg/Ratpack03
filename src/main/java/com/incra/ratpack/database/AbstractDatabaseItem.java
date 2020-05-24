@@ -1,13 +1,10 @@
 package com.incra.ratpack.database;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.io.Serializable;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import java.io.Serializable;
 
 /**
  * Abstract database item, which has an id field.
@@ -16,14 +13,13 @@ import java.io.Serializable;
  * @since late 2016
  */
 @MappedSuperclass
-public abstract class DBItem implements Serializable {
-  private static Logger LOGGER = LoggerFactory.getLogger(DBItem.class);
+public abstract class AbstractDatabaseItem implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  public DBItem() {
+  public AbstractDatabaseItem() {
     super();
   }
 

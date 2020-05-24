@@ -1,7 +1,6 @@
 package com.incra.ratpack.models;
 
-import com.incra.ratpack.database.DBItem;
-
+import com.incra.ratpack.database.AbstractDatabaseItem;
 import javax.persistence.*;
 import java.util.Date;
 import lombok.AllArgsConstructor;
@@ -19,8 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-
-public class Event extends DBItem {
+public class Event extends AbstractDatabaseItem {
 
   @Column(name = "event_date")
   private Date eventDate;

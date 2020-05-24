@@ -1,7 +1,6 @@
 package com.incra.ratpack.models;
 
-import com.incra.ratpack.database.DatedDBItem;
-
+import com.incra.ratpack.database.AbstractDatedDatabaseItem;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -20,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class User extends DatedDBItem {
+public class User extends AbstractDatedDatabaseItem {
   @Column(name = "email")
   protected String email;
 

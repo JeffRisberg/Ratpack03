@@ -6,6 +6,7 @@ import com.incra.ratpack.database.DBConfig;
 import com.incra.ratpack.database.DBException;
 import com.incra.ratpack.database.DBService;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,9 +14,8 @@ import org.slf4j.LoggerFactory;
  * @author Jeff Risberg
  * @since 05/04/17
  */
+@Slf4j
 public class DBServiceProvider implements Provider<DBService> {
-  private static final Logger LOGGER = LoggerFactory.getLogger(DBServiceProvider.class);
-
   private DatabaseConfig databaseConfig;
 
   public DBServiceProvider(DatabaseConfig databaseConfig) {
@@ -35,7 +35,7 @@ public class DBServiceProvider implements Provider<DBService> {
             "jdbc:mysql://%s:%d/%s?allowMultiQueries=true&characterEncoding=utf8",
             server, portNumber, databaseName);
 
-    LOGGER.debug("Setting up database at " + url);
+    log.debug("Setting up database at " + url);
     config.setDriverClassName("com.mysql.jdbc.Driver");
     config.setJdbcUrl(url);
     config.setUsername(databaseConfig.getUsername());

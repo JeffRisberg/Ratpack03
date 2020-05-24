@@ -28,6 +28,9 @@ public class EventHandler extends BaseHandler implements Handler {
 
   @Inject
   public EventHandler(@DB2 DBService dbService) {
+    if (dbService == null) {
+      throw new IllegalArgumentException("unknown dbService");
+    }
     this.dbService = dbService;
   }
 

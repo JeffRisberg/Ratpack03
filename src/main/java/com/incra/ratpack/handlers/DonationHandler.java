@@ -31,6 +31,9 @@ public class DonationHandler extends BaseHandler implements Handler {
 
   @Inject
   public DonationHandler(@DB1 DBService dbService, EventService eventService) {
+    if (dbService == null) {
+      throw new IllegalArgumentException("unknown dbService");
+    }
     this.dbService = dbService;
     this.eventService = eventService;
   }
