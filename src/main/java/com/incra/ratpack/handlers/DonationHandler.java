@@ -1,5 +1,7 @@
 package com.incra.ratpack.handlers;
 
+import static ratpack.jackson.Jackson.json;
+
 import com.incra.ratpack.binding.annotation.DB1;
 import com.incra.ratpack.database.DBService;
 import com.incra.ratpack.database.DBTransaction;
@@ -7,22 +9,21 @@ import com.incra.ratpack.models.Donation;
 import com.incra.ratpack.models.EventType;
 import com.incra.ratpack.models.User;
 import com.incra.ratpack.services.EventService;
-import ratpack.exec.Blocking;
-import ratpack.handling.Context;
-import ratpack.handling.Handler;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static ratpack.jackson.Jackson.json;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import lombok.extern.slf4j.Slf4j;
+import ratpack.exec.Blocking;
+import ratpack.handling.Context;
+import ratpack.handling.Handler;
 
 /**
  * @author Jeff Risberg
  * @since 12/13/16
  */
+@Slf4j
 @Singleton
 public class DonationHandler extends BaseHandler implements Handler {
   protected DBService dbService;

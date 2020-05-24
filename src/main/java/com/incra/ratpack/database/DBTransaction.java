@@ -1,13 +1,11 @@
 package com.incra.ratpack.database;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * A DBTransaction is a set of access methods around an entity manager and the current transaction.
@@ -15,9 +13,8 @@ import java.util.List;
  * @author Jeff Risberg
  * @since late 2016
  */
+@Slf4j
 public class DBTransaction {
-  private static Logger LOGGER = LoggerFactory.getLogger(DBTransaction.class);
-
   private EntityManager em;
   private DBService dbService;
   private EntityTransaction transaction;
@@ -38,9 +35,9 @@ public class DBTransaction {
     checkDatabase(false);
 
     try {
-      LOGGER.debug("Committing Transaction");
+      log.debug("Committing Transaction");
       transaction.commit();
-      LOGGER.trace("Transaction Committed");
+      log.trace("Transaction Committed");
     } catch (Exception e) {
       throw new DBException(e);
     }
@@ -102,7 +99,7 @@ public class DBTransaction {
     try {
       em.persist(object);
     } catch (Exception e) {
-      LOGGER.error("DBTransaction.create()");
+      log.error("DBTransaction.create()");
       throw new DBException(e);
     }
   }
@@ -121,7 +118,7 @@ public class DBTransaction {
       // ignore update, changes are automatically committed.
       if (!em.contains(object)) em.refresh(object);
     } catch (Exception e) {
-      LOGGER.error("DBTransaction.update()");
+      log.error("DBTransaction.update()");
       throw new DBException(e);
     }
   }
@@ -137,7 +134,7 @@ public class DBTransaction {
     try {
       em.remove(object);
     } catch (Exception e) {
-      LOGGER.error("DBTransaction.delete()");
+      log.error("DBTransaction.delete()");
       throw new DBException(e);
     }
   }
@@ -152,7 +149,7 @@ public class DBTransaction {
     try {
       em.refresh(object);
     } catch (Exception e) {
-      LOGGER.error("DBTransaction.refresh()");
+      log.error("DBTransaction.refresh()");
       throw new DBException(e.getMessage());
     }
     return object;
@@ -171,7 +168,7 @@ public class DBTransaction {
     try {
       return em.find(classObject, id);
     } catch (Exception e) {
-      LOGGER.error("DBTransaction.getObjectById()");
+      log.error("DBTransaction.getObjectById()");
       throw new DBException(e);
     }
   }
@@ -264,7 +261,7 @@ public class DBTransaction {
         returnObjects.add(object);
       }
     } catch (Exception e) {
-      LOGGER.error("DBTransaction.getQueryResults()");
+      log.error("DBTransaction.getQueryResults()");
       throw new DBException(e);
     }
 
@@ -277,7 +274,7 @@ public class DBTransaction {
     try {
       query = database.createQuery(queryString);
     } catch (Exception e) {
-      LOGGER.error("DBTransaction.getJPAQuery()");
+      log.error("DBTransaction.getJPAQuery()");
       throw new DBException(e);
     }
 
@@ -389,12 +386,12 @@ public class DBTransaction {
   // state to execute against.  Throws an exception if it is not.
   private void checkDatabase(boolean shouldActivateTransaction) throws DBException {
     if (em == null || !em.isOpen()) {
-      LOGGER.debug("em: " + em);
-      LOGGER.debug("em.isOpen()? " + em.isOpen());
+      log.debug("em: " + em);
+      log.debug("em.isOpen()? " + em.isOpen());
       throw new DBException("Database is closed");
     }
     if (shouldActivateTransaction && transaction.isActive() == false) {
-      LOGGER.debug("Starting transaction");
+      log.debug("Starting transaction");
       transaction.begin();
     }
   }

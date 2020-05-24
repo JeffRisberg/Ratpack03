@@ -3,11 +3,13 @@ package com.incra.ratpack.models;
 import com.incra.ratpack.database.DatedDBItem;
 
 import javax.persistence.*;
+import lombok.Data;
 
 /**
  * @author Jeff Risberg
  * @since 12/30/16
  */
+@Data
 @Entity
 @Table(name = "donation")
 public class Donation extends DatedDBItem {
@@ -20,36 +22,4 @@ public class Donation extends DatedDBItem {
   String charityName;
 
   @Column() Integer amount;
-
-  public Donation() {}
-
-  public Donation(User user, String charityName, Integer amount) {
-    this.user = user;
-    this.charityName = charityName;
-    this.amount = amount;
-  }
-
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
-  }
-
-  public String getCharityName() {
-    return charityName;
-  }
-
-  public void setCharityName(String charityName) {
-    this.charityName = charityName;
-  }
-
-  public Integer getAmount() {
-    return amount;
-  }
-
-  public void setAmount(Integer amount) {
-    this.amount = amount;
-  }
 }

@@ -1,6 +1,7 @@
 package com.incra.ratpack.database;
 
 import com.zaxxer.hikari.HikariConfig;
+import lombok.Data;
 
 /**
  * <i>DBConfig</i> represents the internal configuration of the service, which extends the
@@ -9,19 +10,12 @@ import com.zaxxer.hikari.HikariConfig;
  * @author Jeff Risberg
  * @since 05/02/17
  */
+@Data
 public class DBConfig extends HikariConfig {
 
   protected String persistanceUnitName;
 
   public DBConfig() {
     super();
-  }
-
-  public String getPersistanceUnitName() {
-    return persistanceUnitName;
-  }
-
-  public void setPersistanceUnitName(String persistanceUnitName) {
-    this.persistanceUnitName = persistanceUnitName;
   }
 }
