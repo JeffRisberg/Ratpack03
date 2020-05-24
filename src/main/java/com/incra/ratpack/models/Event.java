@@ -4,13 +4,22 @@ import com.incra.ratpack.database.DBItem;
 
 import javax.persistence.*;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Jeff Risberg
  * @since 12/30/16
  */
+@Data
 @Entity
 @Table(name = "event")
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+
 public class Event extends DBItem {
 
   @Column(name = "event_date")
@@ -26,54 +35,4 @@ public class Event extends DBItem {
   @Column() String page;
 
   @Column() String detail;
-
-  public Event() {}
-
-  public Event(Date eventDate, EventType eventType, String userEmail, String page, String detail) {
-    this.eventDate = eventDate;
-    this.eventType = eventType;
-    this.userEmail = userEmail;
-    this.page = page;
-    this.detail = detail;
-  }
-
-  public Date getEventDate() {
-    return eventDate;
-  }
-
-  public void setEventDate(Date eventDate) {
-    this.eventDate = eventDate;
-  }
-
-  public EventType getEventType() {
-    return eventType;
-  }
-
-  public void setEventType(EventType eventType) {
-    this.eventType = eventType;
-  }
-
-  public String getUserEmail() {
-    return userEmail;
-  }
-
-  public void setUserEmail(String userEmail) {
-    this.userEmail = userEmail;
-  }
-
-  public String getPage() {
-    return page;
-  }
-
-  public void setPage(String page) {
-    this.page = page;
-  }
-
-  public String getDetail() {
-    return detail;
-  }
-
-  public void setDetail(String detail) {
-    this.detail = detail;
-  }
 }

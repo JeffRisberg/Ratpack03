@@ -15,10 +15,9 @@ import java.io.IOException;
  */
 public class EventSerializerModule extends SimpleModule {
   private static final String NAME = "EventSerializerModule";
-  private static final VersionUtil VERSION_UTIL = new VersionUtil() {};
 
   public EventSerializerModule() {
-    super(NAME, VERSION_UTIL.version());
+    super(NAME);
 
     addSerializer(
         Event.class,

@@ -16,10 +16,9 @@ import java.io.IOException;
  */
 public class DonationSerializerModule extends SimpleModule {
   private static final String NAME = "DonationSerializerModule";
-  private static final VersionUtil VERSION_UTIL = new VersionUtil() {};
 
   public DonationSerializerModule() {
-    super(NAME, VERSION_UTIL.version());
+    super(NAME);
 
     addSerializer(
         Donation.class,
