@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -23,14 +23,11 @@ public class User extends AbstractDatedDatabaseItem {
   @Column(name = "email")
   protected String email;
 
-  @Column(name = "firstname")
-  protected String firstname;
+  @Column(name = "first_name")
+  protected String firstName;
 
-  @Column(name = "lastname")
-  protected String lastname;
-
-  @Column(name = "validated")
-  protected Boolean validated = false;
+  @Column(name = "last_name")
+  protected String lastName;
 
   @Column(name = "address1")
   protected String addressLine1;

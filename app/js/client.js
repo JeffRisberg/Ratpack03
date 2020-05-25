@@ -1,29 +1,18 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import {hashHistory, Router} from "react-router";
-import {applyMiddleware, combineReducers, createStore} from "redux";
-import {Provider} from "react-redux";
-import {routerMiddleware, routerReducer} from "react-router-redux";
-import thunkMiddleware from "redux-thunk";
-import users from "./reducers/users";
-import forms from "./reducers/forms";
-import routes from "./routes";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import {Provider} from 'react-redux';
+import { createBrowserHistory } from 'history';
 
-const combinedReducers = combineReducers({
-  users,
-  forms,
-  routing: routerReducer
-});
+import AppRoot from './AppRoot';
+import configureStore from './configureStore';
 
-const store = createStore(
-    combinedReducers,
-    {},
-    applyMiddleware(routerMiddleware(hashHistory), thunkMiddleware)
-);
+const history = createBrowserHistory({basename: '/'});
+
+const store = configureStore({initialState: {}, history});
 
 ReactDOM.render(
-    <Provider store={store}>
-      <Router history={hashHistory} routes={routes}/>
-    </Provider>,
-    document.getElementById('app-root')
+  <Provider store={store}>
+    <AppRoot history={history}/>
+  </Provider>,
+  document.getElementById('app-root')
 );

@@ -1,11 +1,18 @@
 {
-  "presets": [
-    "react"
-  ],
+  "presets": ["es2015", "stage-2", "react"],
   "plugins": [
     [
       "transform-object-rest-spread",
-      "transform-class-properties"
+      "transform-class-properties",
+      [
+        "module-resolver", {
+        "root": "./app/js",
+        "alias": {
+          "Users": "js/components/Users",
+          "pages": "js/pages"
+        }
+      }
+      ]
     ]
   ]
 }

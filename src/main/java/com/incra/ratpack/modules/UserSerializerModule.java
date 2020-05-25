@@ -28,9 +28,8 @@ public class UserSerializerModule extends SimpleModule {
             jGen.writeStartObject();
             jGen.writeNumberField("id", user.getId());
             jGen.writeStringField("email", user.getEmail());
-            jGen.writeStringField("firstname", user.getFirstname());
-            jGen.writeStringField("lastname", user.getLastname());
-            jGen.writeBooleanField("validated", user.getValidated());
+            jGen.writeStringField("firstName", user.getFirstName());
+            jGen.writeStringField("lastName", user.getLastName());
             jGen.writeStringField("addressLine1", user.getAddressLine1());
             jGen.writeStringField("addressLine2", user.getAddressLine2());
             jGen.writeStringField("city", user.getCity());

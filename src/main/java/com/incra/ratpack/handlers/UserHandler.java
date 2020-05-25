@@ -94,8 +94,8 @@ public class UserHandler extends BaseHandler implements Handler {
                         User user = userList.get(0);
 
                         user.setEmail(revisedUser.getEmail());
-                        user.setFirstname(revisedUser.getFirstname());
-                        user.setLastname(revisedUser.getLastname());
+                        user.setFirstName(revisedUser.getFirstName());
+                        user.setLastName(revisedUser.getLastName());
                         user.setCity(revisedUser.getCity());
                         user.setState(revisedUser.getState());
                         user.setLastUpdated(new Date(System.currentTimeMillis()));

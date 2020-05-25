@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @Entity
-@Table(name = "donation")
+@Table(name = "donations")
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)

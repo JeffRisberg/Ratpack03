@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @Entity
-@Table(name = "event")
+@Table(name = "events")
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)

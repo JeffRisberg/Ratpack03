@@ -14,7 +14,7 @@ import java.sql.Date;
 import java.util.List;
 
 /**
- * The <i>EventService</i> handles creating and fetching Logging Events.
+ * The <i>EventService</i> handles creating and fetching Logging Users.
  *
  * @author Jeff Risberg
  * @since 05/03/17
