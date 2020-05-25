@@ -1,23 +1,22 @@
 package com.incra.ratpack.handlers;
 
+import static ratpack.jackson.Jackson.json;
+
 import com.incra.ratpack.binding.annotation.DB1;
 import com.incra.ratpack.database.DBService;
 import com.incra.ratpack.database.DBTransaction;
 import com.incra.ratpack.models.EventType;
 import com.incra.ratpack.models.User;
 import com.incra.ratpack.services.EventService;
-import ratpack.exec.Blocking;
-import ratpack.handling.Context;
-import ratpack.handling.Handler;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static ratpack.jackson.Jackson.json;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import ratpack.exec.Blocking;
+import ratpack.handling.Context;
+import ratpack.handling.Handler;
 
 /**
  * @author Jeff Risberg
@@ -96,12 +95,17 @@ public class UserHandler extends BaseHandler implements Handler {
                         user.setEmail(revisedUser.getEmail());
                         user.setFirstName(revisedUser.getFirstName());
                         user.setLastName(revisedUser.getLastName());
+                        user.setAddressLine1(revisedUser.getAddressLine1());
+                        user.setAddressLine2(revisedUser.getAddressLine2());
                         user.setCity(revisedUser.getCity());
                         user.setState(revisedUser.getState());
                         user.setLastUpdated(new Date(System.currentTimeMillis()));
 
                         dbTransaction.commit();
                         dbTransaction.close(); // transaction has changes, so close it
+
+                        eventService.createEvent(
+                            EventType.Update, user.getEmail(), "User", "update");
 
                         return userList;
                       })
@@ -130,7 +134,7 @@ public class UserHandler extends BaseHandler implements Handler {
                         dbTransaction.close(); // transaction has changes, so close it
 
                         eventService.createEvent(
-                            EventType.Register, "admin@gmail.com", "User", "create");
+                            EventType.Register, newUser.getEmail(), "User", "create");
 
                         return true;
                       })
@@ -159,6 +163,8 @@ public class UserHandler extends BaseHandler implements Handler {
               dbTransaction.delete(user);
               dbTransaction.commit();
               dbTransaction.close(); // transaction has changes, so close it
+
+              eventService.createEvent(EventType.Delete, user.getEmail(), "User", "delete");
 
               return user;
             })

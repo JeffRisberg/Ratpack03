@@ -12,5 +12,7 @@ public enum EventType {
   Checkout,
   Logout,
   ButtonRedirect,
+  Update,
+  Delete,
   Other
 }
