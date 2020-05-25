@@ -8,6 +8,8 @@ export const queryUsers = () => {
     return fetch('/api/users', {})
     .then(response => response.json())
     .then((json) => {
+      console.log("got a set of users");
+      console.log(json.data);
       dispatch(
           {
             type: types.RESET_USERS,
