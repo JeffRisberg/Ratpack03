@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
 import { Link } from 'react-router-dom';
-import { Loading } from '../Loading';
+import Loading from '../Loading';
 import '../Loading/Loading.scss';
 import './Users.scss';
 
 class UserListComponent extends Component {
   static propTypes = {
     records: PropTypes.array.isRequired,
-    status: PropTypes.object.isRequired,
-    toggleUser: PropTypes.func.isRequired,
+    status: PropTypes.object.isRequired
   };
 
   render() {

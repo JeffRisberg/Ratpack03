@@ -2,20 +2,25 @@
 
 .users {
 
-  &__user {
-    color: white;
-    background-color: #124592;
+  &__item {
+    background-color: #fff;
     padding: 10px;
   }
 
   &__list {
+    background-color: #ddd;
     padding: 5px;
     margin-top: 10px;
     margin-bottom: 5px;
+    min-height: 250px;
+  }
+
+  &__list thead {
+    background-color: #ee9415;
   }
 
   &__detail {
-    background-color: #ddefff;
+    background-color: #eecf80;
     padding: 5px;
     margin-top: 10px;
     margin-bottom: 5px;

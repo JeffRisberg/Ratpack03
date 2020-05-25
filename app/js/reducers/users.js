@@ -1,32 +1,16 @@
 import {handleActions} from "redux-actions";
-import {types} from "../types";
+import {ActionTypes as types} from '../constants';
 
 export default handleActions({
-  [types.RESET_USERS]: (state, action) => {
-    const idList = [];
-    const records = {};
-
-    action.users.forEach(record => {
-      records[record.id] = record;
-      idList.push(record.id);
+  [types.FETCH_USERS]: (state) => {
+    return Object.assign({}, state, {
+      data: [],
+      isFetching: true,
     });
-
-    return {idList, records};
   },
-
-  [types.APPEND_USERS]: (state, action) => {
-    const idList = state.idList;
-    const records = state.records;
-
-    action.users.forEach(record => {
-      const id = record.id;
-
-      if (idList.indexOf(id) < 0) {
-        idList.push(id);
-      }
-      records[id] = record;
+  [types.FETCH_USERS_SUCCESS]: (state, action) => {
+    return Object.assign({}, {data: action.users}, {
+      isFetching: false,
     });
-
-    return {idList, records};
-  }
-}, {idList: [], records: {}});
+  },
+}, {data: [], isFetching: false});

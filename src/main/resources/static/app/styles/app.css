@@ -2,18 +2,22 @@
   background: #ddd;
   text-decoration: none; }
 
-.users__user {
-  color: white;
-  background-color: #124592;
+.users__item {
+  background-color: #fff;
   padding: 10px; }
 
 .users__list {
+  background-color: #ddd;
   padding: 5px;
   margin-top: 10px;
-  margin-bottom: 5px; }
+  margin-bottom: 5px;
+  min-height: 250px; }
+
+.users__list thead {
+  background-color: #ee9415; }
 
 .users__detail {
-  background-color: #ddefff;
+  background-color: #eecf80;
   padding: 5px;
   margin-top: 10px;
   margin-bottom: 5px; }

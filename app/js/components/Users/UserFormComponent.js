@@ -75,6 +75,20 @@ class UserFormComponent extends Component {
             </div>
           </div>
           <div>
+            <label>City:</label>
+            <div>
+              <Field name="city" size="40"
+                     component={renderField} type="text" placeholder=""/>
+            </div>
+          </div>
+          <div>
+            <label>State:</label>
+            <div>
+              <Field name="state" size="40"
+                     component={renderField} type="text" placeholder=""/>
+            </div>
+          </div>
+          <div>
             <button type="submit" className="btn btn-default">Submit</button>
           </div>
           <div>

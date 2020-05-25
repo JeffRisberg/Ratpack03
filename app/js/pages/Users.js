@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import UserListContainer from '../components/Users/UserListContainer';
+import UserFormContainer from '../components/Users/UserFormContainer';
 
 class Users extends Component {
 

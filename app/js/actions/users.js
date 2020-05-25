@@ -1,20 +1,23 @@
 import fetch from "isomorphic-fetch";
 import {push} from "react-router-redux";
-import {types} from "../types";
+import {initialize} from 'redux-form';
+import {ActionTypes as types, forms} from '../constants';
 
 export const queryUsers = () => {
   return function (dispatch) {
 
+    dispatch({
+      type: types.FETCH_USERS,
+    });
     return fetch('/api/users', {})
     .then(response => response.json())
     .then((json) => {
-      console.log("got a set of users");
-      console.log(json.data);
       dispatch(
           {
-            type: types.RESET_USERS,
+            type: types.FETCH_USERS_SUCCESS,
             users: json.data
-          });
+          }
+      );
     });
   };
 };
@@ -22,14 +25,17 @@ export const queryUsers = () => {
 export const fetchUser = (id) => {
   return function (dispatch) {
 
+    dispatch({
+      type: types.FETCH_USERS,
+    });
     return fetch('/api/users/' + id, {})
     .then(response => response.json())
     .then((json) => {
-      dispatch(
-          {
-            type: types.APPEND_USERS,
-            users: json.data
-          });
+      dispatch(initialize(forms.User, json.data[0]));
+      dispatch({
+        type: types.FETCH_USERS_SUCCESS,
+        users: json.data
+      });
     });
   };
 };
@@ -43,43 +49,26 @@ export const saveUser = (user) => {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(user)
+      body: JSON.stringify({user: user})
     })
     .then(response => response.json())
     .then((json) => {
       dispatch({
-        type: types.APPEND_USERS,
-        users: json.data
+        type: types.PERSIST_USER_SUCCESS,
+        users: [json.data],
+        meta: {
+          log: ['user changed', user]
+        }
       });
+      dispatch(push('/users'));
     });
   };
 };
 
-export const addUser = (user) => {
-  return function () {
-
-    return fetch("/api/users", {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(user)
-    })
-    .then(response => response.json())
-    .then(() => {
-      //dispatch({
-      //    type: types.APPEND_USERS,
-      //    users: json.data
-      //});
-    });
-  }
-};
-
-export const deleteUser = (user, thenUrl) => {
+export const deleteUser = (id) => {
   return function (dispatch) {
 
-    return fetch('/api/users/' + user.id, {
+    return fetch('/api/users/' + id, {
       method: 'DELETE',
       headers: {
         'Accept': 'application/json',
@@ -87,7 +76,7 @@ export const deleteUser = (user, thenUrl) => {
       }
     })
     .then(() => {
-      dispatch(push(thenUrl))
+      dispatch(push('/users'));
     });
   };
 };

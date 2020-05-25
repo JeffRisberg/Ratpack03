@@ -38,9 +38,8 @@ const mapDispatchToProps = dispatch => ({
   submitHandler: (values) => {
     const user = {
       ...values,
-      name: values.name.trim(),
-      value: values.value,
-      description: values.description.trim()
+      firstName: values.firstName.trim(),
+      lastName: values.lastName.trim()
     };
     dispatch(saveUser(user));
   },
