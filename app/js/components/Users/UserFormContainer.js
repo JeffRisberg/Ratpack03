@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 import { forms } from '../../constants';
-import { fetchUser, saveUser, deleteUser } from '../../actions/users';
+import { fetchUser, updateUser, deleteUser } from '../../actions/users';
 import UserFormComponent from './UserFormComponent';
 import './Users.scss';
 
@@ -41,7 +41,7 @@ const mapDispatchToProps = dispatch => ({
       firstName: values.firstName.trim(),
       lastName: values.lastName.trim()
     };
-    dispatch(saveUser(user));
+    dispatch(updateUser(user));
   },
   deleteHandler: (e, id) => {
     e.preventDefault();

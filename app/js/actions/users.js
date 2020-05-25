@@ -40,7 +40,7 @@ export const fetchUser = (id) => {
   };
 };
 
-export const saveUser = (user) => {
+export const updateUser = (user) => {
   return function (dispatch) {
 
     return fetch('/api/users/' + user.id, {
@@ -49,13 +49,13 @@ export const saveUser = (user) => {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({user: user})
+      body: JSON.stringify(user)
     })
     .then(response => response.json())
     .then((json) => {
       dispatch({
         type: types.PERSIST_USER_SUCCESS,
-        users: [json.data],
+        users: json.data,
         meta: {
           log: ['user changed', user]
         }
