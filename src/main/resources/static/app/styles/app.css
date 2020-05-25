@@ -1,0 +1,91 @@
+.navbar-inverse .navbar-nav > li > a.active {
+  background: #ddd;
+  text-decoration: none; }
+
+.users__user {
+  color: white;
+  background-color: #124592;
+  padding: 10px; }
+
+.users__list {
+  padding: 5px;
+  margin-top: 10px;
+  margin-bottom: 5px; }
+
+.users__detail {
+  background-color: #ddefff;
+  padding: 5px;
+  margin-top: 10px;
+  margin-bottom: 5px; }
+
+/* ==========================================================================
+   #CORE
+   ========================================================================== */
+/* ==========================================================================
+   #COLORS
+   ========================================================================== */
+.loading, .loading--medium, .loading--small, .loading--large {
+  overflow: hidden;
+  position: relative;
+  margin: 0 auto;
+  width: 48px; }
+  .loading::before, .loading--medium::before, .loading--small::before, .loading--large::before {
+    content: "";
+    display: block;
+    padding-top: 100%; }
+
+.loading--small {
+  width: 24px; }
+
+.loading--large {
+  width: 96px; }
+
+.loading__container {
+  animation: rotate 2s linear infinite;
+  height: 100%;
+  transform-origin: center center;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto; }
+
+.loading__circle {
+  stroke-dasharray: 1, 200;
+  stroke-dashoffset: 0;
+  stroke-width: 4px;
+  stroke-miterlimit: 10;
+  fill: none;
+  stroke: #ac29b5;
+  animation: dash 1.5s ease-in-out infinite;
+  stroke-linecap: round; }
+
+.loading--purple .loading__circle {
+  stroke: #ac29b5; }
+
+.loading--white .loading__circle {
+  stroke: #ffffff; }
+
+.jg-loading--grey .jg-loading__circle {
+  stroke: #999999; }
+
+.jg-loading--blue .jg-loading__circle {
+  stroke: #1d67be; }
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg); } }
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0; }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px; }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px; } }
+
